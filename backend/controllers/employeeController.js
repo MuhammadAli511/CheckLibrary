@@ -65,45 +65,51 @@ module.exports.googleSignup = async (req, res) => {
 }
 
 module.exports.signup = async (req, res) => {
-    const { firstName, lastName, email, password } = await req.body
+    const { firstName, lastName, email, password } = await req.body;
     if (!firstName || !lastName || !email || !password) {
         const data = {
             status: 400,
             message: 'Error: Please fill all fields'
-        }
-        res.status(400).send(data)
-        return
+        };
+        res.status(400).send(data);
+        return;
     }
-    const employeeExists = await Employee.findOne({ email })
+
+    const employeeExists = await Employee.findOne({ email });
 
     if (employeeExists) {
         const data = {
             status: 400,
             message: 'Error: Employee already exists'
-        }
-        res.status(400).send(data)
-        return
+        };
+        res.status(400).send(data);
+        return;
     }
 
-    const salt = await bcrypt.genSalt(10)
-    const hashedPassword = await bcrypt.hash(password, salt)
-    const role = 'employee'
-    const employee = await Employee.create({ firstName, lastName, email, password: hashedPassword, role })
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    const role = 'employee';
+    const employee = await Employee.create({ firstName, lastName, email, password: hashedPassword, role });
     if (employee) {
+        // Generate a token
+        const token = generateToken(email);
+
         const data = {
             status: 200,
             message: 'Employee created successfully',
-        }
-        res.status(200).send(data)
-        return
+            token: token // Include the token in the response
+        };
+        res.status(200).send(data);
+        return;
     }
     const data = {
         status: 400,
         message: 'Error: Employee signup failed'
-    }
-    res.status(400).send(data)
-    return
-}
+    };
+    res.status(400).send(data);
+    return;
+};
+
 
 module.exports.login = async (req, res) => {
     const { email, password } = await req.body
