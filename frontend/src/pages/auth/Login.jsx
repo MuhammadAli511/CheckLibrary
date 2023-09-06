@@ -1,8 +1,13 @@
 import { useState } from "react";
+import { GoogleLogin } from '@react-oauth/google';
+import jwt_decode from "jwt-decode";
 import { Link, useNavigate } from "react-router-dom";
 import { GoogleLogo } from "../../assets";
 import { LogoNavbar } from "../../components";
+import { useDispatch } from 'react-redux';
 import { login } from "../../helper";
+import { fetchEmployeeDetails, googleSignUp, signup } from "../../helper";
+
 
 const Login = () => {
 
@@ -13,12 +18,48 @@ const Login = () => {
     const [isLoading, setIsLoading] = useState(false);
     const { workEmail, password } = formData;
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+
 
     const onChange = (e) => {
         setFormData((prevState) => ({
             ...prevState,
             [e.target.name]: e.target.value,
         }))
+    }
+
+    const googleSuccess = async (res) => {
+        const token = res?.credential;
+        const defaultTimeZoneCode = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        try {
+            dispatch({ type: "AUTH", data: { token } });
+            const decodedToken = await jwt_decode(token);
+            const response = await googleSignUp(decodedToken.given_name, decodedToken.family_name, decodedToken.email, defaultTimeZoneCode);
+            if (!response) {
+                alert("Can not reach Server");
+            }
+            if (response.status === 200) {
+                const {employee} = await fetchEmployeeDetails(decodedToken.email);
+                dispatch({
+                    type: "AUTH",
+                    data: {
+                        token,
+                        employee
+                    }
+                });
+                navigate("/dashboard");
+            }
+            else {
+                alert(response.message);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const googleFailure = (error) => {
+        console.log(error)
+        console.log("Google Sign in was uncessucefull. Try Again Later.")
     }
 
     const handleSubmit = async (e) => {
@@ -96,10 +137,17 @@ const Login = () => {
                     </div>
 
                     <div className="flex flex-row items-center justify-center mt-4">
-                        <button>
-                            <img src={GoogleLogo} alt="Google Icon" className="w-5 h-5 mr-2" />
-                            Sign Up With Google
-                        </button>
+                    <GoogleLogin
+                            render={(renderProps) => (
+                                <button onClick={renderProps.onClick} disabled={renderProps.disabled}>
+                                    <img src={GoogleLogo} alt="Google Icon" className="w-5 h-5 mr-2" />
+                                    Sign Up With Google
+                                </button>
+                            )}
+                            onSuccess={googleSuccess}
+                            onFailure={googleFailure}
+                            cookiePolicy="single_host_origin"
+                        />
                     </div>
                 </div>
             </div>
