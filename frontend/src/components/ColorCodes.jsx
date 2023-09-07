@@ -1,6 +1,22 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { useSelector } from 'react-redux';
+import { ThemeContext } from "../ThemeProvider";
+import { updateSingleColor } from "../helper";
 
-function ColorPicker({ color, setColor, label }) {
+function ColorPicker({ color, setColor, label, theme }) {
+    const handleColorChange = (e) => {
+        setColor(e.target.value);
+    }
+    const handleColorBlur = async (e) => {
+        setColor(e.target.value);
+        var property;
+        if (label === "Corner Radius") {
+            property = "cornerRadius";
+        } else {
+            property = label.toLowerCase().replace(/\s/g, '');
+        }
+        const response = await updateSingleColor(property, e.target.value, theme);
+    }
     return (
         <div className="relative border bg-background-light py-3 pl-6 pr-6 rounded-lg mt-3 flex justify-between items-center">
             <p>{label}</p>
@@ -12,7 +28,8 @@ function ColorPicker({ color, setColor, label }) {
                 <input 
                     type="color" 
                     value={color}
-                    onChange={(e) => setColor(e.target.value)}
+                    onChange={handleColorChange}
+                    onBlur={handleColorBlur}
                     className="opacity-0 absolute inset-0 h-full w-full rounded cursor-pointer"
                 />
             </div>
@@ -23,60 +40,62 @@ function ColorPicker({ color, setColor, label }) {
 
 
 function ColorCodes() {
+    const employeeDetails = useSelector(state => state.auth.authData?.employee);
+
     // Light Theme Colors
-    const [lightPrimary, setLightprimary] = useState("#079263");
-    const [lightText, setLightText] = useState("#110011");
-    const [lightBackground, setLightBackground] = useState("#FFFFFF");
-    const [lightBackground2, setLightBackground2] = useState("#DCDCDC");
-    const [lightCornerRadius, setLightCornerRadius] = useState("#2E293E");
-    const [lightWarning, setLightWarning] = useState("#EC5453");
-    const [lightStatus, setLightStatus] = useState("#DCDCDC");
-    const [lightStatus1, setLightStatus1] = useState("#F4B1A9");
-    const [lightStatus2, setLightStatus2] = useState("#B7CEFF");
-    const [lightStatus3, setLightStatus3] = useState("#B7F8FF");
+    const [lightPrimary, setLightprimary] = useState(employeeDetails.lightColorScheme.primary);
+    const [lightText, setLightText] = useState(employeeDetails.lightColorScheme.text);
+    const [lightBackground, setLightBackground] = useState(employeeDetails.lightColorScheme.background);
+    const [lightBackground2, setLightBackground2] = useState(employeeDetails.lightColorScheme.background2);
+    const [lightCornerRadius, setLightCornerRadius] = useState(employeeDetails.lightColorScheme.cornerRadius);
+    const [lightWarning, setLightWarning] = useState(employeeDetails.lightColorScheme.warning);
+    const [lightStatus, setLightStatus] = useState(employeeDetails.lightColorScheme.status);
+    const [lightStatus1, setLightStatus1] = useState(employeeDetails.lightColorScheme.status1);
+    const [lightStatus2, setLightStatus2] = useState(employeeDetails.lightColorScheme.status2);
+    const [lightStatus3, setLightStatus3] = useState(employeeDetails.lightColorScheme.status3);
 
     // Dark Theme Colors
-    const [darkPrimary, setDarkPrimary] = useState("#079263");
-    const [darkText, setDarkText] = useState("#FFFFFF");
-    const [darkBackground, setDarkBackground] = useState("#261E35");
-    const [darkBackground2, setDarkBackground2] = useState("#2E293E");
-    const [darkCornerRadius, setDarkCornerRadius] = useState("#403A54");
-    const [darkWarning, setDarkWarning] = useState("#EC5453");
-    const [darkStatus, setDarkStatus] = useState("#DCDCDC");
-    const [darkStatus1, setDarkStatus1] = useState("#F4B1A9");
-    const [darkStatus2, setDarkStatus2] = useState("#B7CEFF");
-    const [darkStatus3, setDarkStatus3] = useState("#B7F8FF");
+    const [darkPrimary, setDarkPrimary] = useState(employeeDetails.darkColorScheme.primary);
+    const [darkText, setDarkText] = useState(employeeDetails.darkColorScheme.text);
+    const [darkBackground, setDarkBackground] = useState(employeeDetails.darkColorScheme.background);
+    const [darkBackground2, setDarkBackground2] = useState(employeeDetails.darkColorScheme.background2);
+    const [darkCornerRadius, setDarkCornerRadius] = useState(employeeDetails.darkColorScheme.cornerRadius);
+    const [darkWarning, setDarkWarning] = useState(employeeDetails.darkColorScheme.warning);
+    const [darkStatus, setDarkStatus] = useState(employeeDetails.darkColorScheme.status);
+    const [darkStatus1, setDarkStatus1] = useState(employeeDetails.darkColorScheme.status1);
+    const [darkStatus2, setDarkStatus2] = useState(employeeDetails.darkColorScheme.status2);
+    const [darkStatus3, setDarkStatus3] = useState(employeeDetails.darkColorScheme.status3);
 
     const lightColorsPrimary = [
-        { label: 'Primary', color: lightPrimary, setColor: setLightprimary },
-        { label: 'Text', color: lightText, setColor: setLightText },
-        { label: 'Background', color: lightBackground, setColor: setLightBackground },
-        { label: 'Background 2', color: lightBackground2, setColor: setLightBackground2 },
-        { label: 'Corner Radius', color: lightCornerRadius, setColor: setLightCornerRadius },
-        { label: 'Warning', color: lightWarning, setColor: setLightWarning }
+        { label: 'Primary', color: lightPrimary, setColor: setLightprimary, theme: 'light' },
+        { label: 'Text', color: lightText, setColor: setLightText, theme: 'light' },
+        { label: 'Background', color: lightBackground, setColor: setLightBackground, theme: 'light' },
+        { label: 'Background 2', color: lightBackground2, setColor: setLightBackground2, theme: 'light' },
+        { label: 'Corner Radius', color: lightCornerRadius, setColor: setLightCornerRadius, theme: 'light' },
+        { label: 'Warning', color: lightWarning, setColor: setLightWarning, theme: 'light' },
     ];
 
     const lightColorsSecondary = [
-        { label: 'Status', color: lightStatus, setColor: setLightStatus },
-        { label: 'Status 1', color: lightStatus1, setColor: setLightStatus1 },
-        { label: 'Status 2', color: lightStatus2, setColor: setLightStatus2 },
-        { label: 'Status 3', color: lightStatus3, setColor: setLightStatus3 },
+        { label: 'Status', color: lightStatus, setColor: setLightStatus, theme: 'light' },
+        { label: 'Status 1', color: lightStatus1, setColor: setLightStatus1, theme: 'light' },
+        { label: 'Status 2', color: lightStatus2, setColor: setLightStatus2, theme: 'light' },
+        { label: 'Status 3', color: lightStatus3, setColor: setLightStatus3, theme: 'light' },
     ]
 
     const darkColorsPrimary = [
-        { label: 'Primary', color: darkPrimary, setColor: setDarkPrimary },
-        { label: 'Text', color: darkText, setColor: setDarkText },
-        { label: 'Background', color: darkBackground, setColor: setDarkBackground },
-        { label: 'Background 2', color: darkBackground2, setColor: setDarkBackground2 },
-        { label: 'Corner Radius', color: darkCornerRadius, setColor: setDarkCornerRadius },
-        { label: 'Warning', color: darkWarning, setColor: setDarkWarning }
+        { label: 'Primary', color: darkPrimary, setColor: setDarkPrimary, theme: 'dark' },
+        { label: 'Text', color: darkText, setColor: setDarkText, theme: 'dark' },
+        { label: 'Background', color: darkBackground, setColor: setDarkBackground, theme: 'dark' },
+        { label: 'Background 2', color: darkBackground2, setColor: setDarkBackground2, theme: 'dark' },
+        { label: 'Corner Radius', color: darkCornerRadius, setColor: setDarkCornerRadius, theme: 'dark' },
+        { label: 'Warning', color: darkWarning, setColor: setDarkWarning, theme: 'dark' },
     ];
 
     const darkColorsSecondary = [    
-        { label: 'Status', color: darkStatus, setColor: setDarkStatus },
-        { label: 'Status 1', color: darkStatus1, setColor: setDarkStatus1 },
-        { label: 'Status 2', color: darkStatus2, setColor: setDarkStatus2 },
-        { label: 'Status 3', color: darkStatus3, setColor: setDarkStatus3 },
+        { label: 'Status', color: darkStatus, setColor: setDarkStatus, theme: 'dark' },
+        { label: 'Status 1', color: darkStatus1, setColor: setDarkStatus1, theme: 'dark' },
+        { label: 'Status 2', color: darkStatus2, setColor: setDarkStatus2, theme: 'dark' },
+        { label: 'Status 3', color: darkStatus3, setColor: setDarkStatus3, theme: 'dark' },
     ]
 
 
@@ -94,6 +113,7 @@ function ColorCodes() {
                                     label={item.label}
                                     color={item.color}
                                     setColor={item.setColor}
+                                    theme={item.theme}
                                 />
                             ))}
                             <div className="mt-4"></div>
@@ -104,6 +124,7 @@ function ColorCodes() {
                                     label={item.label}
                                     color={item.color}
                                     setColor={item.setColor}
+                                    theme={item.theme}
                                 />
                             ))}
                         </div>
@@ -115,6 +136,7 @@ function ColorCodes() {
                                     label={item.label}
                                     color={item.color}
                                     setColor={item.setColor}
+                                    theme={item.theme}
                                 />
                             ))}
                             <div className="mt-4"></div>
@@ -125,6 +147,7 @@ function ColorCodes() {
                                     label={item.label}
                                     color={item.color}
                                     setColor={item.setColor}
+                                    theme={item.theme}
                                 />
                             ))}
                         </div>
