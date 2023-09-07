@@ -92,3 +92,12 @@ export const updatePersonalInfo = async (firstName, lastName, dob, timeZone) => 
     });
     return await response.json();
 }
+
+export const updateSingleColor = async (property, color, theme) => {
+    const response = await fetch(`${API_URL}/employeeRoute/updateSingleColor`, {
+        method: "POST",
+        headers: getHeaders(),
+        body: JSON.stringify({ property, color, theme }),
+    });
+    return await response.json();
+}

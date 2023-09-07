@@ -7,7 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import timezones from 'timezones-list';
 import { GoogleLogo } from "../../assets";
 import { LogoNavbar } from "../../components";
-import { fetchEmployeeDetails, googleSignUp, signup } from "../../helper";
+import { googleSignUp, signup } from "../../helper";
 
 const SignUp = () => {
     const [formData, setFormData] = useState({
@@ -41,7 +41,7 @@ const SignUp = () => {
                 alert("Can not reach Server");
             }
             if (response.status === 200) {
-                const {employee} = await fetchEmployeeDetails(decodedToken.email);
+                const employee = response.employee;
                 dispatch({
                     type: "AUTH",
                     data: {

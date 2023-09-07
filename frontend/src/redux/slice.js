@@ -1,5 +1,5 @@
 import { combineReducers, createSlice } from '@reduxjs/toolkit';
-import { AUTH, LOGOUT, SET_THEME, UPDATE_PROFILE } from "../constants/actiontypes";
+import { AUTH, LOGOUT, SET_THEME, UPDATE_PROFILE } from "../constants/actionTypes";
 
 const initialState = {
     authData: {

@@ -35,4 +35,7 @@ router.post('/employeeRoute/updateProfile', requireAuth, employeeController.upda
 // POST api/employeeRoute/updatePersonalInfo
 router.post('/employeeRoute/updatePersonalInfo', requireAuth, employeeController.updatePersonalInfo)
 
+// POST api/employeeRoute/updateSingleColor
+router.post('/employeeRoute/updateSingleColor', requireAuth, employeeController.updateSingleColor)
+
 module.exports = router
