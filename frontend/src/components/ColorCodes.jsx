@@ -1,9 +1,11 @@
 import React, { useContext, useState } from "react";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ThemeContext } from "../ThemeProvider";
 import { updateSingleColor } from "../helper";
 
+
 function ColorPicker({ color, setColor, label, theme }) {
+    const dispatch = useDispatch();
     const handleColorChange = (e) => {
         setColor(e.target.value);
     }
@@ -16,6 +18,13 @@ function ColorPicker({ color, setColor, label, theme }) {
             property = label.toLowerCase().replace(/\s/g, '');
         }
         const response = await updateSingleColor(property, e.target.value, theme);
+        if (response.status === 200) {
+            const employee = response.employee;
+            dispatch({
+                type: "UPDATE_PROFILE",
+                payload: employee
+            });
+        }
     }
     return (
         <div className="relative border bg-background-light py-3 pl-6 pr-6 rounded-lg mt-3 flex justify-between items-center">
