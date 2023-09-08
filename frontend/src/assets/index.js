@@ -3,13 +3,13 @@ import commCenter from './comm-center.jpeg';
 import commLeft from './comm-left.jpeg';
 import commRight from './comm-right.jpeg';
 import GoogleLogo from './google-logo.png';
+import notfound from './notfound.png';
 import product from './product.png';
 export {
     CheckLibraryLogo,
     GoogleLogo,
     commCenter,
     commLeft,
-    commRight,
-    product
+    commRight, notfound, product
 };
 
