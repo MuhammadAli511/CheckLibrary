@@ -6,6 +6,12 @@ import LightThemeIcon from '../assets/lightTheme.svg';
 import TickIcon from '../assets/tick.svg';
 import { updateTheme } from '../helper';
 import { setThemes as setThemesAction } from '../redux/actions';
+// Toast
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import '../toastCustomStyles.css';
+import ErrorToast from "./ErrorToast";
+import SuccessToast from "./SuccessToast";
 
 function Appearance() {
     const dispatch = useDispatch();
@@ -15,11 +21,23 @@ function Appearance() {
     
     const handleThemeChange = async (selectedTheme) => {
         dispatch(setThemesAction(selectedTheme));
-        await updateTheme(selectedTheme);
+        const response = await updateTheme(selectedTheme);
+        if (response.status === 500) {
+            toast(<ErrorToast message={response.message} />);
+        }
     };
 
     return (
         <div className="mt-4">
+            <ToastContainer 
+                position="top-right"
+                autoClose={3000}
+                hideProgressBar
+                closeOnClick={true}
+                pauseOnHover={true}
+                draggable={false}
+                theme="colored"
+            />
             <div className="border pt-6 pl-6 pr-6 pb-6 rounded-lg" style={{backgroundColor: themeColors.background, borderColor: themeColors.cornerRadius}}>
                 <div className="flex justify-between items-center mb-6">
                     <span className="font-medium text-xl" style={{color: themeColors.text}}>Appearance</span>

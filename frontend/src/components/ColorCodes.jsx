@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
+import { updateSingleColor } from "../helper";
+// Toast
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { updateSingleColor } from "../helper";
 import '../toastCustomStyles.css';
 import ErrorToast from "./ErrorToast";
 import SuccessToast from "./SuccessToast";
