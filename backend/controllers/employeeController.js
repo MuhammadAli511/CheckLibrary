@@ -356,3 +356,23 @@ module.exports.updateSingleColor = async (req, res) => {
     }
     res.status(200).send(data)
 }
+
+module.exports.updateDateTimeValues = async (req, res) => {
+    const { weekStartOn, dateFormat, timeFormat } = await req.body
+
+    const employee = await Employee.findOneAndUpdate({ email: req.email }, { weekStartOn: weekStartOn, dateFormat: dateFormat, timeFormat: timeFormat }, { new: true })
+    if (!employee) {
+        const data = {
+            status: 400,
+            message: 'Error: Employee does not exist'
+        }
+        res.status(400).send(data)
+        return
+    }
+    const data = {
+        status: 200,
+        message: 'DateTime Values updated successfully',
+        employee
+    }
+    res.status(200).send(data)
+}

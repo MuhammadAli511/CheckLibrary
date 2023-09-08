@@ -1,6 +1,5 @@
 import React, { useContext, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import { ThemeContext } from "../ThemeProvider";
 import { updateSingleColor } from "../helper";
 
 

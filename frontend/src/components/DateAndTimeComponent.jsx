@@ -1,11 +1,31 @@
 import { DateTime } from 'luxon';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import timezones from 'timezones-list';
+import { updateDateTimeValues } from '../helper';
 
 function DateAndTimeComponent() {
-    const [timeZone, setTimeZone] = useState(Intl.DateTimeFormat().resolvedOptions().timeZone);
-    const [selectedDays, setSelectedDays] = useState([]);
+    const dispatch = useDispatch();
+    const employeeDetails = useSelector(state => state.auth.authData?.employee);
 
+    // Time Zone
+    const [timeZone, setTimeZone] = useState(Intl.DateTimeFormat().resolvedOptions().timeZone);
+    // Date Format
+    const [dateFormat, setDateFormat] = useState(employeeDetails.dateFormat);
+    const dateFormatTypes = ["YYYY-MM-DD", "DD-MM-YYYY", "MM-DD-YYYY", "DD/MM/YYYY"];
+    const rearrangedDateFormats = [dateFormat, ...dateFormatTypes.filter(format => format !== dateFormat)];
+    // Time Format
+    const [timeFormat, setTimeFormat] = useState(employeeDetails.timeFormat);
+    const timeFormatTypes = ["12 Hours", "24 Hours"];
+    const rearrangedTimeFormats = [timeFormat, ...timeFormatTypes.filter(format => format !== timeFormat)];
+
+    // Week Start On
+    const [weekStartOn, setWeekStartOn] = useState(employeeDetails.weekStartOn);
+    const weekStartOnDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    const rearrangedDays = [weekStartOn, ...weekStartOnDays.filter(day => day !== weekStartOn)];
+
+    // Days Off
+    const [selectedDays, setSelectedDays] = useState([]);
     const days = [
         { abbreviation: "M", fullName: "Monday" },
         { abbreviation: "T", fullName: "Tuesday" },
@@ -15,7 +35,6 @@ function DateAndTimeComponent() {
         { abbreviation: "S", fullName: "Saturday" },
         { abbreviation: "S", fullName: "Sunday" }
     ];
-
     const toggleDay = (dayName) => {
         if (selectedDays.includes(dayName)) {
             setSelectedDays(prevDays => prevDays.filter(day => day !== dayName));
@@ -23,6 +42,20 @@ function DateAndTimeComponent() {
             setSelectedDays(prevDays => [...prevDays, dayName]);
         }
     };
+    const handleDateTimeValuesButton = async () => {
+        const weekStartOnSelected = document.getElementById("weekStartOn").value;
+        const dateFormatSelected = document.getElementById("dateFormat").value;
+        const timeFormatSelected = document.getElementById("timeFormat").value;
+        const response = await updateDateTimeValues(weekStartOnSelected, dateFormatSelected, timeFormatSelected);
+        if (response.status === 200) {
+            const employee = response.employee;
+            dispatch({
+                type: "UPDATE_PROFILE",
+                payload: employee
+            });
+        }
+    }
+        
 
     return (
         <div className="mt-4">
@@ -51,29 +84,25 @@ function DateAndTimeComponent() {
                     <div>
                         <label htmlFor="weekStartOn" className="block text-sm font-medium text-gray-700 mb-3">Week Start on</label>
                         <select id="weekStartOn" name="weekStartOn" className="border border-[#DCDCDC] p-3 rounded-lg w-full">
-                            <option value="Monday">Monday</option>
-                            <option value="Tuesday">Tuesday</option>
-                            <option value="Wednesday">Wednesday</option>
-                            <option value="Thursday">Thursday</option>
-                            <option value="Friday">Friday</option>
-                            <option value="Saturday">Saturday</option>
-                            <option value="Sunday">Sunday</option>
+                            {rearrangedDays.map(day => (
+                                <option key={day} value={day}>{day}</option>
+                            ))}
                         </select>
                     </div>
                     <div>
                         <label htmlFor="dateFormat" className="block text-sm font-medium text-gray-700 mb-3">Date Format</label>
                         <select id="dateFormat" name="dateFormat" className="border border-[#DCDCDC] p-3 rounded-lg w-full">
-                            <option value="YYYY-MM-DD">YYYY-MM-DD</option>
-                            <option value="DD-MM-YYYY">DD-MM-YYYY</option>
-                            <option value="MM-DD-YYYY">MM-DD-YYYY</option>
-                            <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                            {rearrangedDateFormats.map(format => (
+                                <option key={format} value={format}>{format}</option>
+                            ))}
                         </select>
                     </div>
                     <div>
                         <label htmlFor="timeFormat" className="block text-sm font-medium text-gray-700 mb-3">Time Format</label>
                         <select id="timeFormat" name="timeFormat" className="border border-[#DCDCDC] p-3 rounded-lg w-full">
-                            <option value="12H">12 Hours</option>
-                            <option value="24H">24 Hours</option>
+                            {rearrangedTimeFormats.map(format => (
+                                <option key={format} value={format}>{format}</option>
+                            ))}
                         </select>
                     </div>
                 </div>
@@ -95,7 +124,7 @@ function DateAndTimeComponent() {
                 </div>
                 <div className="flex justify-end mt-6 mb-2">
                     <button className="rounded-lg px-4 py-3 bg-[#F6F6F6] text-[#9B9B9B] mr-3">Cancel</button>
-                    <button className="rounded-lg px-5 py-3 bg-primary-light text-white">Save</button>
+                    <button onClick={handleDateTimeValuesButton} className="rounded-lg px-5 py-3 bg-primary-light text-white">Save</button>
                 </div>
             </div>
         </div>

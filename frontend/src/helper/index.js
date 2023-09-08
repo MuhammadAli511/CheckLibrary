@@ -101,3 +101,12 @@ export const updateSingleColor = async (property, color, theme) => {
     });
     return await response.json();
 }
+
+export const updateDateTimeValues = async (weekStartOn, dateFormat, timeFormat) => {
+    const response = await fetch(`${API_URL}/employeeRoute/updateDateTimeValues`, {
+        method: "POST",
+        headers: getHeaders(),
+        body: JSON.stringify({ weekStartOn, dateFormat, timeFormat }),
+    });
+    return await response.json();
+}

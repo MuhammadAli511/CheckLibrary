@@ -79,7 +79,7 @@ const employeeSchema = mongoose.Schema({
     },
     weekStartOn: {
         type: String,
-        default: 'monday'
+        default: 'Monday'
     },
     dateFormat: {
         type: String,
@@ -91,7 +91,7 @@ const employeeSchema = mongoose.Schema({
     },
     daysOff: {
         type: Array,
-        default: ['saturday','sunday']
+        default: ['Saturday','Sunday']
     },
 })
 module.exports = mongoose.model('Employees',employeeSchema)
