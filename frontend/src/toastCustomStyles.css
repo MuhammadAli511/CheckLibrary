@@ -1,0 +1,8 @@
+.Toastify__toast.Toastify__toast-theme--colored {
+    background-color: transparent !important; /* to ensure the background color is transparent */
+    box-shadow: none !important; /* to remove any shadows, if required */
+}
+
+.Toastify__toast-container {
+    background-color: transparent !important; /* to ensure the background color is transparent */
+}

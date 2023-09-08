@@ -1,11 +1,17 @@
 import { DateTime } from 'luxon';
 import { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import timezones from 'timezones-list';
 import { ThemeContext } from "../ThemeProvider";
 import CameraIcon from '../assets/camera.svg';
 import { updatePersonalInfo } from '../helper';
 import { setEmployeeProfile } from '../redux/actions';
+import '../toastCustomStyles.css';
+import ErrorToast from "./ErrorToast";
+import SuccessToast from "./SuccessToast";
+
 
 function PersonalInfo() {
     const dispatch = useDispatch();
@@ -29,15 +35,25 @@ function PersonalInfo() {
 
     const updatePersonalInfoButton = async () => {
         const response = await updatePersonalInfo( firstName, lastName, dob, timeZone );
-        if (response && response.employee) {
+        if (response.status === 200) {
+            toast(<SuccessToast message={response.message} />);
             dispatch(setEmployeeProfile(response.employee));
         } else {
-            console.error('Failed to update profile:', response);
+            toast(<ErrorToast message={response.message} />);
         }
     }
 
     return (
         <div className="mt-4">
+            <ToastContainer 
+                position="top-right"
+                autoClose={3000}
+                hideProgressBar
+                closeOnClick={true}
+                pauseOnHover={true}
+                draggable={false}
+                theme="colored"
+            />
             <div className="border pt-6 pl-6 pr-6 pb-6 rounded-lg" style={{ backgroundColor: themeColors.background, borderColor: themeColors.cornerRadius }}>
                 <div className="flex justify-between items-center mb-6">
                     <span className="font-medium text-xl" style={{ color: themeColors.text }}>Personal Info</span>

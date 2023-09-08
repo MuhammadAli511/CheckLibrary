@@ -6,7 +6,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { GoogleLogo } from "../../assets";
 import { LogoNavbar } from "../../components";
 import { googleSignUp, login, signup } from "../../helper";
-
+// Toast
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import ErrorToast from "../../components/ErrorToast";
+import SuccessToast from "../../components/SuccessToast";
+import '../../toastCustomStyles.css';
 
 const Login = () => {
 
@@ -34,7 +39,7 @@ const Login = () => {
             const decodedToken = await jwt_decode(token);
             const response = await googleSignUp(decodedToken.given_name, decodedToken.family_name, decodedToken.email, defaultTimeZoneCode);
             if (!response) {
-                alert("Can not reach Server");
+                toast(<ErrorToast message="Can not reach Server" />);
             }
             if (response.status === 200) {
                 const employee = response.employee
@@ -48,10 +53,10 @@ const Login = () => {
                 navigate("/dashboard");
             }
             else {
-                alert(response.message);
+                toast(<ErrorToast message={response.message} />);
             }
         } catch (error) {
-            console.log(error);
+            toast(<ErrorToast message="Google Sign in was uncessucefull. Try Again Later." />);
         }
     }
 
@@ -66,7 +71,7 @@ const Login = () => {
             setIsLoading(true);
             const response = await login(workEmail, password);
             if (!response) {
-                alert("Can not reach Server");
+                toast(<ErrorToast message="Can not reach Server" />);
             }
             if (response.status === 200) {
                 const employee = response.employee;
@@ -81,7 +86,7 @@ const Login = () => {
                 navigate("/dashboard");
             }
             else {
-                alert(response.message);
+                toast(<ErrorToast message={response.message} />);
             }
         } finally {
             setIsLoading(false);
@@ -91,6 +96,15 @@ const Login = () => {
 
     return (
         <div className="bg-[#F7F7F7] min-h-screen">
+            <ToastContainer 
+                position="top-right"
+                autoClose={3000}
+                hideProgressBar
+                closeOnClick={true}
+                pauseOnHover={true}
+                draggable={false}
+                theme="colored"
+            />
             <LogoNavbar />
             <div className="flex flex-col items-center justify-center px-2 sm:px-6 lg:px-0">
                 <div className="bg-white py-4 px-6 mt-4 rounded-lg w-full max-w-xl sm:max-w-md lg:max-w-md h-auto">

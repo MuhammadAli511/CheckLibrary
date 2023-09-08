@@ -3,6 +3,12 @@ import { ThemeContext } from "../ThemeProvider";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import { csv } from '../constants/svgs';
+// Toast
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import ErrorToast from "../components/ErrorToast";
+import SuccessToast from "../components/SuccessToast";
+import '../toastCustomStyles.css';
 
 const ImportCsv = () => {
     const themeColors = useContext(ThemeContext);
@@ -12,14 +18,24 @@ const ImportCsv = () => {
         const file = e.target.files[0];
         if (file && file.name.endsWith('.csv')) {
             setFileName(file.name);
+            toast(<SuccessToast message="File uplaoded" />);
         } else {
-            alert('Please upload a valid CSV file.');
+            setFileName('');
+            toast(<ErrorToast message="Upload valid csv file" />);
         }
     };
 
     return (
         <div className="flex flex-col h-screen" style={{ backgroundColor: themeColors.background }}>
-
+            <ToastContainer 
+                position="top-right"
+                autoClose={3000}
+                hideProgressBar
+                closeOnClick={true}
+                pauseOnHover={true}
+                draggable={false}
+                theme="colored"
+            />
             <div className="flex h-full">
                 <Sidebar />
                 <div className="flex flex-col flex-1 pl-10 mt-5 ml-64">

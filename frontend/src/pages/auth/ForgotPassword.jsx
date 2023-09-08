@@ -3,6 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import lock from "../../assets/lock.svg";
 import { LogoNavbar } from "../../components";
 import { SendPasswordResetEmail } from "../../helper";
+// Toast
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import ErrorToast from "../../components/ErrorToast";
+import SuccessToast from "../../components/SuccessToast";
+import '../../toastCustomStyles.css';
 
 const ForgotPassword = () => {
 
@@ -26,13 +32,13 @@ const ForgotPassword = () => {
             setIsLoading(true);
             const response = await SendPasswordResetEmail(workEmail);
             if (!response) {
-                alert("Can not reach Server");
+                toast(<ErrorToast message="Can not reach Server" />);
             }
             if (response.status === 200) {
                 navigate("/check-your-mail");
             }
             else {
-                alert(response.message);
+                toast(<ErrorToast message={response.message} />);
             }
         } finally {
             setIsLoading(false);
@@ -42,6 +48,15 @@ const ForgotPassword = () => {
 
     return (
         <div className="bg-[#F7F7F7] min-h-screen">
+            <ToastContainer 
+                position="top-right"
+                autoClose={3000}
+                hideProgressBar
+                closeOnClick={true}
+                pauseOnHover={true}
+                draggable={false}
+                theme="colored"
+            />
             <LogoNavbar />
             <div className="flex flex-col items-center justify-center px-2 sm:px-6 lg:px-0">
                 <div className="bg-white py-4 px-6 mt-4 rounded-lg w-full max-w-xl sm:max-w-md lg:max-w-lg h-auto">

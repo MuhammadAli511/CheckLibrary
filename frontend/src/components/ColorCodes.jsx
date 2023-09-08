@@ -1,6 +1,12 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { updateSingleColor } from "../helper";
+import '../toastCustomStyles.css';
+import ErrorToast from "./ErrorToast";
+import SuccessToast from "./SuccessToast";
+
 
 
 function ColorPicker({ color, setColor, label, theme }) {
@@ -18,11 +24,14 @@ function ColorPicker({ color, setColor, label, theme }) {
         }
         const response = await updateSingleColor(property, e.target.value, theme);
         if (response.status === 200) {
+            toast(<SuccessToast message={response.message} />);
             const employee = response.employee;
             dispatch({
                 type: "UPDATE_PROFILE",
                 payload: employee
             });
+        } else {
+            toast(<ErrorToast message={response.message} />);
         }
     }
     return (
@@ -109,6 +118,15 @@ function ColorCodes() {
 
     return (
         <div className="mt-4">
+            <ToastContainer 
+                position="top-right"
+                autoClose={3000}
+                hideProgressBar
+                closeOnClick={true}
+                pauseOnHover={true}
+                draggable={false}
+                theme="colored"
+            />
             <div className="border bg-background-light pt-6 pl-6 pr-6 pb-2 rounded-lg">
                 <div className="mb-6">
                     <span className="font-medium text-xl">Color Codes</span>

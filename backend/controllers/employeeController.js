@@ -19,10 +19,10 @@ module.exports.googleSignup = async (req, res) => {
     const { firstName, lastName, email, timeZone } = await req.body
     if (!firstName || !lastName || !email || !timeZone) {
         const data = {
-            status: 400,
-            message: 'Error: Please fill all fields'
+            status: 500,
+            message: 'Please fill all fields'
         }
-        res.status(400).send(data)
+        res.status(500).send(data)
         return
     }
     const employeeExists = await Employee.findOne({ email })
@@ -33,17 +33,17 @@ module.exports.googleSignup = async (req, res) => {
         if (updateEmployee) {
             const data = {
                 status: 200,
-                message: 'Employee updated successfully',
+                message: 'Sign up successful',
                 employee: updateEmployee
             }
             res.status(200).send(data)
             return
         }
         const data = {
-            status: 400,
+            status: 500,
             message: 'Error: Employee signup failed'
         }
-        res.status(400).send(data)
+        res.status(500).send(data)
         return
     }
 
@@ -51,17 +51,17 @@ module.exports.googleSignup = async (req, res) => {
     if (employee) {
         const data = {
             status: 200,
-            message: 'Employee created successfully',
+            message: 'Sign up successful',
             employee
         }
         res.status(200).send(data)
         return
     }
     const data = {
-        status: 400,
-        message: 'Error: Employee signup failed'
+        status: 500,
+        message: 'Signup failed'
     }
-    res.status(400).send(data)
+    res.status(500).send(data)
     return
 }
 
@@ -70,20 +70,20 @@ module.exports.signup = async (req, res) => {
     if (!firstName || !lastName || !email || !password || !defaultTimeZoneCode) {
         console.log(firstName, lastName, email, password, defaultTimeZoneCode)
         const data = {
-            status: 400,
-            message: 'Error: Please fill all fields'
+            status: 500,
+            message: 'Please fill all fields'
         }
-        res.status(400).send(data)
+        res.status(500).send(data)
         return
     }
     const employeeExists = await Employee.findOne({ email })
 
     if (employeeExists) {
         const data = {
-            status: 400,
-            message: 'Error: Employee already exists'
+            status: 500,
+            message: 'Email already exists'
         }
-        res.status(400).send(data)
+        res.status(500).send(data)
         return
     }
 
@@ -94,16 +94,16 @@ module.exports.signup = async (req, res) => {
     if (employee) {
         const data = {
             status: 200,
-            message: 'Employee created successfully',
+            message: 'Sign up successful',
         }
         res.status(200).send(data)
         return
     }
     const data = {
-        status: 400,
-        message: 'Error: Employee signup failed'
+        status: 500,
+        message: 'Signup failed'
     }
-    res.status(400).send(data)
+    res.status(500).send(data)
     return
 }
 
@@ -111,39 +111,39 @@ module.exports.login = async (req, res) => {
     const { email, password } = await req.body
     if (!email || !password) {
         const data = {
-            status: 400,
-            message: 'Error: Please fill all fields'
+            status: 500,
+            message: 'Please fill all fields'
         }
-        res.status(400).send(data)
+        res.status(500).send(data)
         return
     }
 
     const employee = await Employee.findOne({ email })
     if (!employee) {
         const data = {
-            status: 400,
-            message: 'Error: Employee does not exist'
+            status: 500,
+            message: 'No account found with this email'
         }
-        res.status(400).send(data)
+        res.status(500).send(data)
         return
     }
 
     if (!employee.password) {
         const data = {
-            status: 400,
-            message: 'Error: Employee does not exist'
+            status: 500,
+            message: 'No account found with this email'
         }
-        res.status(400).send(data)
+        res.status(500).send(data)
         return
     }
 
     const passwordMatch = await bcrypt.compare(password, employee.password)
     if (!passwordMatch) {
         const data = {
-            status: 400,
-            message: 'Error: Invalid password'
+            status: 500,
+            message: 'Invalid password'
         }
-        res.status(400).send(data)
+        res.status(500).send(data)
         return
     }
 
@@ -151,7 +151,7 @@ module.exports.login = async (req, res) => {
 
     const data = {
         status: 200,
-        message: 'Employee logged in successfully',
+        message: 'Login successful',
         employee,
         token
     }
@@ -165,10 +165,10 @@ module.exports.SendEmailforPasswordReset = async (req, res) => {
     const employee = await Employee.findOne({ email })
     if (!employee) {
         const data = {
-            status: 400,
+            status: 500,
             message: 'Error: Employee does not exist'
         }
-        res.status(400).send(data)
+        res.status(500).send(data)
         return
     }
 
@@ -221,10 +221,10 @@ module.exports.ChangePasswordonReset = async (req, res) => {
     const employee = await Employee.findOne({ received_token })
     if (!employee) {
         const data = {
-            status: 400,
+            status: 500,
             message: 'Error: Token does not exist'
         }
-        res.status(400).send(data)
+        res.status(500).send(data)
         return
     }
 
@@ -247,10 +247,10 @@ module.exports.fetchEmployeeDetails = async (req, res) => {
     const employee = await Employee.findOne({ email })
     if (!employee) {
         const data = {
-            status: 400,
+            status: 500,
             message: 'Error: Employee does not exist'
         }
-        res.status(400).send(data)
+        res.status(500).send(data)
         return
     }
     const data = {
@@ -266,10 +266,10 @@ module.exports.updateTheme = async (req, res) => {
     const employee = await Employee.findOne({ email: req.email })
     if (!employee) {
         const data = {
-            status: 400,
-            message: 'Error: Employee does not exist'
+            status: 500,
+            message: 'Internal Server Error'
         }
-        res.status(400).send(data)
+        res.status(500).send(data)
         return
     }
     employee.selectedTheme = theme
@@ -286,10 +286,10 @@ module.exports.updateProfile = async (req, res) => {
     const employee = await Employee.findOne({ email: req.email })
     if (!employee) {
         const data = {
-            status: 400,
-            message: 'Error: Employee does not exist'
+            status: 500,
+            message: 'Internal Server Error'
         }
-        res.status(400).send(data)
+        res.status(500).send(data)
         return
     }
     employee.position = position
@@ -310,10 +310,10 @@ module.exports.updatePersonalInfo = async (req, res) => {
     const employee = await Employee.findOne({ email: req.email })
     if (!employee) {
         const data = {
-            status: 400,
-            message: 'Error: Employee does not exist'
+            status: 500,
+            message: 'Internal Server Error'
         }
-        res.status(400).send(data)
+        res.status(500).send(data)
         return
     }
     employee.firstName = firstName
@@ -335,10 +335,10 @@ module.exports.updateSingleColor = async (req, res) => {
     const employee = await Employee.findOne({ email: req.email })
     if (!employee) {
         const data = {
-            status: 400,
-            message: 'Error: Employee does not exist'
+            status: 500,
+            message: 'Internal Server Error'
         }
-        res.status(400).send(data)
+        res.status(500).send(data)
         return
     }
     if (theme === 'light') {
@@ -363,15 +363,15 @@ module.exports.updateDateTimeValues = async (req, res) => {
     const employee = await Employee.findOneAndUpdate({ email: req.email }, { weekStartOn: weekStartOn, dateFormat: dateFormat, timeFormat: timeFormat }, { new: true })
     if (!employee) {
         const data = {
-            status: 400,
-            message: 'Error: Employee does not exist'
+            status: 500,
+            message: 'Internal Server Error'
         }
-        res.status(400).send(data)
+        res.status(500).send(data)
         return
     }
     const data = {
         status: 200,
-        message: 'DateTime Values updated successfully',
+        message: 'Date and Time updated successfully',
         employee
     }
     res.status(200).send(data)

@@ -17,7 +17,6 @@ function App() {
         <Route path="/settings" element={<Settings />} />
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/marketplace" element={<Marketplace />} />
-        <Route path="/marketplace" element={<Marketplace />} />
         <Route path="/import" element={<ImportCsv />} />
         <Route path="/addProduct" element={<AddProduct />} />
         <Route path="*" element={<NotFound />} />

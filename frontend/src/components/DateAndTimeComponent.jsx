@@ -1,8 +1,13 @@
 import { DateTime } from 'luxon';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import timezones from 'timezones-list';
 import { updateDateTimeValues } from '../helper';
+import '../toastCustomStyles.css';
+import ErrorToast from "./ErrorToast";
+import SuccessToast from "./SuccessToast";
 
 function DateAndTimeComponent() {
     const dispatch = useDispatch();
@@ -48,17 +53,29 @@ function DateAndTimeComponent() {
         const timeFormatSelected = document.getElementById("timeFormat").value;
         const response = await updateDateTimeValues(weekStartOnSelected, dateFormatSelected, timeFormatSelected);
         if (response.status === 200) {
+            toast(<SuccessToast message={response.message} />);
             const employee = response.employee;
             dispatch({
                 type: "UPDATE_PROFILE",
                 payload: employee
             });
+        } else {
+            toast(<ErrorToast message={response.message} />);
         }
     }
         
 
     return (
         <div className="mt-4">
+            <ToastContainer 
+                position="top-right"
+                autoClose={3000}
+                hideProgressBar
+                closeOnClick={true}
+                pauseOnHover={true}
+                draggable={false}
+                theme="colored"
+            />
             <div className="border bg-background-light pt-6 pl-6 pr-6 pb-2 rounded-lg">
                 <div className="flex justify-between items-center mb-6">
                     <span className="font-medium text-xl">Date & Time</span>

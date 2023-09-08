@@ -1,4 +1,9 @@
 import React, { useState } from "react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import '../toastCustomStyles.css';
+import ErrorToast from "./ErrorToast";
+import SuccessToast from "./SuccessToast";
 
 
 function ProductMedia() {
@@ -7,13 +12,24 @@ function ProductMedia() {
         const file = e.target.files[0];
         if (file) {
             setFileName(file.name);
+            toast(<SuccessToast message="File uplaoded" />);
         } else {
-            alert('Please upload a valid file.');
+            setFileName('');
+            toast(<ErrorToast message="File not uploaded" />);
         }
     };
 
     return (
         <div className="mt-4">
+            <ToastContainer 
+                position="top-right"
+                autoClose={3000}
+                hideProgressBar
+                closeOnClick={true}
+                pauseOnHover={true}
+                draggable={false}
+                theme="colored"
+            />
             <div className="font-medium text-2xl mb-4">Product Details</div>
             <div className="flex flex-1 items-center justify-center">
                 <input
