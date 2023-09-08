@@ -1,12 +1,11 @@
-import { useState } from "react";
 import { GoogleLogin } from '@react-oauth/google';
 import jwt_decode from "jwt-decode";
+import { useState } from "react";
+import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from "react-router-dom";
 import { GoogleLogo } from "../../assets";
 import { LogoNavbar } from "../../components";
-import { useDispatch } from 'react-redux';
-import { login } from "../../helper";
-import { fetchEmployeeDetails, googleSignUp, signup } from "../../helper";
+import { googleSignUp, login, signup } from "../../helper";
 
 
 const Login = () => {
@@ -39,7 +38,7 @@ const Login = () => {
                 alert("Can not reach Server");
             }
             if (response.status === 200) {
-                const {employee} = await fetchEmployeeDetails(decodedToken.email);
+                const employee = response.employee
                 dispatch({
                     type: "AUTH",
                     data: {

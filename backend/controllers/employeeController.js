@@ -33,7 +33,8 @@ module.exports.googleSignup = async (req, res) => {
         if (updateEmployee) {
             const data = {
                 status: 200,
-                message: 'Employee updated successfully'
+                message: 'Employee updated successfully',
+                employee: updateEmployee
             }
             res.status(200).send(data)
             return
@@ -51,7 +52,7 @@ module.exports.googleSignup = async (req, res) => {
         const data = {
             status: 200,
             message: 'Employee created successfully',
-            token: generateToken(email)
+            employee
         }
         res.status(200).send(data)
         return
@@ -325,6 +326,34 @@ module.exports.updatePersonalInfo = async (req, res) => {
     const data = {
         status: 200,
         message: 'Personal Info updated successfully',
+        employee
+    }
+    res.status(200).send(data)
+}
+
+module.exports.updateSingleColor = async (req, res) => {
+    const { property, color, theme } = await req.body
+    
+    const employee = await Employee.findOne({ email: req.email })
+    if (!employee) {
+        const data = {
+            status: 400,
+            message: 'Error: Employee does not exist'
+        }
+        res.status(400).send(data)
+        return
+    }
+    if (theme === 'light') {
+        employee.lightColorScheme[property] = color
+        employee.markModified('lightColorScheme');
+    } else {
+        employee.darkColorScheme[property] = color
+        employee.markModified('darkColorScheme');
+    }
+    await employee.save()
+    const data = {
+        status: 200,
+        message: 'Color updated successfully',
         employee
     }
     res.status(200).send(data)
