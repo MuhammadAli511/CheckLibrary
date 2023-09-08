@@ -31,7 +31,6 @@ const Login = () => {
         const token = res?.credential;
         const defaultTimeZoneCode = Intl.DateTimeFormat().resolvedOptions().timeZone;
         try {
-            dispatch({ type: "AUTH", data: { token } });
             const decodedToken = await jwt_decode(token);
             const response = await googleSignUp(decodedToken.given_name, decodedToken.family_name, decodedToken.email, defaultTimeZoneCode);
             if (!response) {
@@ -70,7 +69,15 @@ const Login = () => {
                 alert("Can not reach Server");
             }
             if (response.status === 200) {
-                localStorage.setItem('token', response.token);
+                const employee = response.employee;
+                const token = response.token;
+                dispatch({
+                    type: "AUTH",
+                    data: {
+                        token,
+                        employee
+                    }
+                });
                 navigate("/dashboard");
             }
             else {

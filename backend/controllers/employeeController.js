@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 const Employee = require('../models/employee')
 const utility = require('../utilities')
 
-function generateToken(email) {
+async function generateToken(email) {
     const token = jwt.sign(
         { email },
         process.env.JWT_SECRET,
@@ -47,7 +47,7 @@ module.exports.googleSignup = async (req, res) => {
         return
     }
 
-    const employee = await Employee.create({ firstName, lastName, email, role, timeZone })
+    const employee = await Employee.create({ firstName, lastName, email, timeZone, role })
     if (employee) {
         const data = {
             status: 200,
@@ -66,8 +66,9 @@ module.exports.googleSignup = async (req, res) => {
 }
 
 module.exports.signup = async (req, res) => {
-    const { firstName, lastName, email, password } = await req.body
-    if (!firstName || !lastName || !email || !password) {
+    const { firstName, lastName, email, password, defaultTimeZoneCode } = await req.body
+    if (!firstName || !lastName || !email || !password || !defaultTimeZoneCode) {
+        console.log(firstName, lastName, email, password, defaultTimeZoneCode)
         const data = {
             status: 400,
             message: 'Error: Please fill all fields'
@@ -89,7 +90,7 @@ module.exports.signup = async (req, res) => {
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(password, salt)
     const role = 'employee'
-    const employee = await Employee.create({ firstName, lastName, email, password: hashedPassword, role })
+    const employee = await Employee.create({ firstName, lastName, email, password: hashedPassword, defaultTimeZoneCode, role })
     if (employee) {
         const data = {
             status: 200,
@@ -146,10 +147,13 @@ module.exports.login = async (req, res) => {
         return
     }
 
+    const token = await generateToken(email)
+
     const data = {
         status: 200,
         message: 'Employee logged in successfully',
-        token: generateToken(email)
+        employee,
+        token
     }
     res.status(200).send(data)
 

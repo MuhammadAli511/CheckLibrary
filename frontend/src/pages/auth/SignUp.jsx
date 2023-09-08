@@ -34,7 +34,6 @@ const SignUp = () => {
         const token = res?.credential;
         const defaultTimeZoneCode = Intl.DateTimeFormat().resolvedOptions().timeZone;
         try {
-            dispatch({ type: "AUTH", data: { token } });
             const decodedToken = await jwt_decode(token);
             const response = await googleSignUp(decodedToken.given_name, decodedToken.family_name, decodedToken.email, defaultTimeZoneCode);
             if (!response) {
@@ -72,7 +71,8 @@ const SignUp = () => {
         }
         try {
             setIsLoading(true);
-            const response = await signup(firstName, lastName, workEmail, password);
+            const defaultTimeZoneCode = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const response = await signup(firstName, lastName, workEmail, password, defaultTimeZoneCode);
             if (!response) {
                 alert("Can not reach Server");
             }

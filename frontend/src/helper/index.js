@@ -21,11 +21,11 @@ export const googleSignUp = async ( firstName, lastName, email, timeZone ) => {
     return await response.json();
 };
 
-export const signup = async ( firstName, lastName, email, password ) => {
+export const signup = async ( firstName, lastName, email, password, defaultTimeZoneCode ) => {
     const response = await fetch(`${API_URL}/employeeRoute/signup`, {
         method: "POST",
         headers: getHeaders(),
-        body: JSON.stringify({ firstName, lastName, email, password }),
+        body: JSON.stringify({ firstName, lastName, email, password, defaultTimeZoneCode }),
     });
     return await response.json();
 }
