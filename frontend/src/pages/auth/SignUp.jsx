@@ -61,7 +61,7 @@ const SignUp = () => {
 
     const googleFailure = (error) => {
         console.log(error)
-        console.log("Google Sign in was uncessucefull. Try Again Later.")
+        console.log("Google Sign in was unsuccessfull. Try Again Later.")
     }
 
     const handleSubmit = async (e) => {
@@ -70,23 +70,36 @@ const SignUp = () => {
             alert("Passwords do not match");
             return;
         }
+        
         try {
             setIsLoading(true);
             const response = await signup(firstName, lastName, workEmail, password);
+    
             if (!response) {
-                alert("Can not reach Server");
+                alert("Cannot reach the server");
             }
-            if (response.status === 200) {
+            // console.log(response,"response")
+            if (response.status === 200 ) {
+                const { token } = response.token;
+    
+                localStorage.setItem('token', response.token);
+    
+                dispatch({ type: "AUTH", data: { token } });
+    
+                alert("Signup successfull");
+         
                 navigate("/login");
+            } else {
+                alert("Signup failed. Please try again.");
             }
-            else {
-                alert(response.message);
-            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("An error occurred during signup. Please try again.");
         } finally {
             setIsLoading(false);
         }
     };
-
+    
 
     return (
         <div className="bg-[#F7F7F7] min-h-screen">
