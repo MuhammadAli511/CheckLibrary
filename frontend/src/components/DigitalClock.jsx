@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useSelector } from 'react-redux';
 import { ThemeContext } from "../ThemeProvider";
 import DayBackground from '../assets/Day.svg';
 import Moon from '../assets/Moon.svg';
@@ -17,27 +18,54 @@ const CLOCKS = [
     { location: 'Sydney', timezone: 'Australia/Sydney' },
 ];
 
-function getTimeForTimeZone(timezone) {
+function getTimeFormatBool(timeFormat) {
+    switch(timeFormat) {
+        case '12 Hour':
+            return true;
+        case '24 Hour':
+            return false;
+        default:
+            return true;
+    }
+}
+
+function getTimeForTimeZone(timezone, dateFormat, timeFormat) {
     const now = new Date();
+
+    let dateOptions = {};
+    switch(dateFormat) {
+        case 'YYYY-MM-DD':
+            dateOptions = { year: 'numeric', month: '2-digit', day: '2-digit' };
+            break;
+        case 'DD-MM-YYYY':
+            dateOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
+            break;
+        case 'MM-DD-YYYY':
+            dateOptions = { month: '2-digit', day: '2-digit', year: 'numeric' };
+            break;
+        case 'DD/MM/YYYY':
+            dateOptions = { day: '2-digit', month: 'short', year: 'numeric' };
+            break;
+        default:
+            dateOptions = { day: '2-digit', month: 'short', year: 'numeric' };
+    }
 
     const optionsTime = {
         timeZone: timezone,
         hour: '2-digit',
         minute: '2-digit',
-        hour12: true,
+        hour12: getTimeFormatBool(timeFormat),
     };
 
     const optionsDate = {
         timeZone: timezone,
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
+        ...dateOptions
     };
 
     const optionsHour = {
         timeZone: timezone,
         hour: '2-digit',
-        hour12: false
+        hour12: getTimeFormatBool(timeFormat),
     };
 
     const timeString = new Intl.DateTimeFormat('en-US', optionsTime).format(now);
@@ -48,9 +76,11 @@ function getTimeForTimeZone(timezone) {
 }
 
 
+
 function DigitalClock() {
     const [currentTime, setCurrentTime] = useState(new Date());
     const themeColors = useContext(ThemeContext);
+    const employeeDetails = useSelector(state => state.auth.authData?.employee);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -68,7 +98,7 @@ function DigitalClock() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
                     {CLOCKS.map((clock, index) => {
-                        const { time, date, hour } = getTimeForTimeZone(clock.timezone);
+                        const { time, date, hour } = getTimeForTimeZone(clock.timezone, employeeDetails.dateFormat, employeeDetails.timeFormat);
                         const isDay = hour < 18 && hour > 6;
 
                         return (
