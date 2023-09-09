@@ -61,8 +61,7 @@ const Login = () => {
     }
 
     const googleFailure = (error) => {
-        console.log(error)
-        console.log("Google Sign in was uncessucefull. Try Again Later.")
+        toast(<ErrorToast message="Google Sign in was uncessucefull. Try Again Later." />);
     }
 
     const handleSubmit = async (e) => {

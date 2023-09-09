@@ -110,3 +110,12 @@ export const updateDateTimeValues = async (weekStartOn, dateFormat, timeFormat) 
     });
     return await response.json();
 }
+
+export const changePassword = async (currentPassword, newPassword, confirmPassword) => {
+    const response = await fetch(`${API_URL}/employeeRoute/changePassword`, {
+        method: "POST",
+        headers: getHeaders(),
+        body: JSON.stringify({ currentPassword, newPassword, confirmPassword }),
+    });
+    return await response.json();
+}

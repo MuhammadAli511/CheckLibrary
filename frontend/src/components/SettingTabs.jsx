@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setSettingTabAction } from "../redux/actions";
 
 function classNames(...classes) {
@@ -8,8 +8,9 @@ function classNames(...classes) {
 
 export default function SettingTabs() {
     const dispatch = useDispatch();
+    const employee = useSelector(state => state.auth.authData?.employee);
 
-    const [tabs, setTabs] = useState([
+    let initialTabs = [
         { name: 'My Account', current: true },
         { name: 'Profile', current: false },
         { name: 'Security', current: false },
@@ -21,7 +22,13 @@ export default function SettingTabs() {
         { name: 'Branding', current: false },
         { name: 'Nav Sidebar', current: false },
         { name: 'Tracking Pixel', current: false },
-    ]);
+    ];
+
+    if (employee?.accountType === 'google') {
+        initialTabs = initialTabs.filter(tab => tab.name !== 'Security');
+    }
+
+    const [tabs, setTabs] = useState(initialTabs);
 
     const handleTabClick = (tabName) => {
         const updatedTabs = tabs.map(tab => ({
@@ -65,7 +72,7 @@ export default function SettingTabs() {
                                 )}
                                 aria-current={tab.current ? 'page' : undefined}
                                 onClick={(e) => {
-                                    e.preventDefault(); // Prevents default behavior (like navigating)
+                                    e.preventDefault();
                                     handleTabClick(tab.name);
                                 }}
                             >

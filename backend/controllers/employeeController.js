@@ -82,7 +82,6 @@ module.exports.googleSignup = async (req, res) => {
 module.exports.signup = async (req, res) => {
     const { firstName, lastName, email, password, defaultTimeZoneCode } = await req.body
     if (!firstName || !lastName || !email || !password || !defaultTimeZoneCode) {
-        console.log(firstName, lastName, email, password, defaultTimeZoneCode)
         const data = {
             status: 500,
             message: 'Please fill all fields'
@@ -168,6 +167,7 @@ module.exports.login = async (req, res) => {
         status: 200,
         message: 'Login successful',
         employee: strippedEmployee,
+        token
     }
     res.status(200).send(data)
 
@@ -175,7 +175,6 @@ module.exports.login = async (req, res) => {
 
 module.exports.SendEmailforPasswordReset = async (req, res) => {
     const { email } = await req.body
-    console.log(email)
     const employee = await Employee.findOne({ email })
     if (!employee) {
         const data = {
@@ -231,7 +230,6 @@ module.exports.SendEmailforPasswordReset = async (req, res) => {
 
 module.exports.ChangePasswordonReset = async (req, res) => {
     const { new_password, confirm_password, received_token } = await req.body
-    console.log("New Password Details: " + new_password, confirm_password, received_token)
     const employee = await Employee.findOne({ received_token })
     if (!employee) {
         const data = {
@@ -250,8 +248,6 @@ module.exports.ChangePasswordonReset = async (req, res) => {
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(new_password, salt)
     const employeeUpdate = await Employee.findOneAndUpdate({ received_token }, { password: hashedPassword })
-    console.log("Hashed Password: " + hashedPassword)
-    console.log("Employee Update: " + employeeUpdate)
     res.status(200).send(data)
 
 }
@@ -393,6 +389,59 @@ module.exports.updateDateTimeValues = async (req, res) => {
     const data = {
         status: 200,
         message: 'Date and Time updated successfully',
+        employee: strippedEmployee
+    }
+    res.status(200).send(data)
+}
+
+module.exports.changePassword = async (req, res) => {
+    const {currentPassword, newPassword, confirmPassword} = await req.body
+    if (!currentPassword || !newPassword || !confirmPassword) {
+        const data = {
+            status: 500,
+            message: 'Please fill all fields'
+        }
+        res.status(500).send(data)
+        return
+    }
+
+    if (newPassword !== confirmPassword) {
+        const data = {
+            status: 500,
+            message: 'Passwords do not match'
+        }
+        res.status(500).send(data)
+        return
+    }
+
+    const employee = await Employee.findOne({ email: req.email })
+    if (!employee) {
+        const data = {
+            status: 500,
+            message: 'Internal Server Error'
+        }
+        res.status(500).send(data)
+        return
+    }
+
+    const passwordMatch = await bcrypt.compare(currentPassword, employee.password)
+    if (!passwordMatch) {
+        const data = {
+            status: 500,
+            message: 'Invalid current password'
+        }
+        res.status(500).send(data)
+        return
+    }
+
+    const salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(newPassword, salt)
+    employee.password = hashedPassword
+    await employee.save()
+    const strippedEmployee = await stripEmployee(employee);
+    const data = {
+        status: 200,
+        message: 'Password updated successfully',
         employee: strippedEmployee
     }
     res.status(200).send(data)

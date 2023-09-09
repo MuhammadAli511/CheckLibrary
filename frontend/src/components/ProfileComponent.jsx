@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { ThemeContext } from "../ThemeProvider";
 import { updateProfile } from '../helper';
 import { setEmployeeProfile } from '../redux/actions';
+// Toast
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import '../toastCustomStyles.css';
 import ErrorToast from "./ErrorToast";
 import SuccessToast from "./SuccessToast";
@@ -30,7 +31,6 @@ function ProfileComponent() {
     const updateProfileButton = async  () => {
         const response = await updateProfile( position, phoneNumber, website, bio );
         if (response.status === 200) {
-            console.log(response.employee);
             toast(<SuccessToast message={response.message} />);
             dispatch(setEmployeeProfile(response.employee));
         } else {
