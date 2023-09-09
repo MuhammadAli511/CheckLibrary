@@ -20,9 +20,12 @@ function Appearance() {
     const currentTheme = employee?.selectedTheme || 'light';
     
     const handleThemeChange = async (selectedTheme) => {
-        dispatch(setThemesAction(selectedTheme));
         const response = await updateTheme(selectedTheme);
-        if (response.status === 500) {
+        if (response.status === 200) {
+            dispatch(setThemesAction(selectedTheme));
+            toast(<SuccessToast message={response.message} />);
+        }
+        else {
             toast(<ErrorToast message={response.message} />);
         }
     };

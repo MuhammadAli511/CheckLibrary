@@ -14,6 +14,18 @@ async function generateToken(email) {
     return token;
 }
 
+async function stripEmployee(employee) {
+    const strippedEmployee = employee.toObject ? employee.toObject() : employee;
+    
+    if (strippedEmployee.password) {
+        strippedEmployee.password = null;
+        strippedEmployee.accountType = "email";
+    } else {
+        strippedEmployee.accountType = "google";
+    }
+    
+    return strippedEmployee;
+}
 
 module.exports.googleSignup = async (req, res) => {
     const { firstName, lastName, email, timeZone } = await req.body
@@ -30,11 +42,12 @@ module.exports.googleSignup = async (req, res) => {
 
     if (employeeExists) {
         const updateEmployee = await Employee.findOneAndUpdate({ email }, { firstName, lastName, timeZone, role })
+        const strippedEmployee = await stripEmployee(updateEmployee);
         if (updateEmployee) {
             const data = {
                 status: 200,
                 message: 'Sign up successful',
-                employee: updateEmployee
+                employee: strippedEmployee
             }
             res.status(200).send(data)
             return
@@ -49,10 +62,11 @@ module.exports.googleSignup = async (req, res) => {
 
     const employee = await Employee.create({ firstName, lastName, email, timeZone, role })
     if (employee) {
+        const strippedEmployee = await stripEmployee(employee);
         const data = {
             status: 200,
             message: 'Sign up successful',
-            employee
+            employee: strippedEmployee
         }
         res.status(200).send(data)
         return
@@ -149,11 +163,11 @@ module.exports.login = async (req, res) => {
 
     const token = await generateToken(email)
 
+    const strippedEmployee = await stripEmployee(employee);
     const data = {
         status: 200,
         message: 'Login successful',
-        employee,
-        token
+        employee: strippedEmployee,
     }
     res.status(200).send(data)
 
@@ -253,10 +267,11 @@ module.exports.fetchEmployeeDetails = async (req, res) => {
         res.status(500).send(data)
         return
     }
+    const strippedEmployee = await stripEmployee(employee);
     const data = {
         status: 200,
         message: 'Employee fetched successfully',
-        employee
+        employee: strippedEmployee
     }
     res.status(200).send(data)
 }
@@ -274,9 +289,11 @@ module.exports.updateTheme = async (req, res) => {
     }
     employee.selectedTheme = theme
     await employee.save()
+    const strippedEmployee = await stripEmployee(employee);
     const data = {
         status: 200,
         message: 'Theme updated successfully',
+        employee: strippedEmployee
     }
     res.status(200).send(data)
 }
@@ -297,10 +314,11 @@ module.exports.updateProfile = async (req, res) => {
     employee.website = website
     employee.bio = bio
     await employee.save()
+    const strippedEmployee = await stripEmployee(employee);
     const data = {
         status: 200,
         message: 'Profile updated successfully',
-        employee
+        employee: strippedEmployee
     }
     res.status(200).send(data)
 }
@@ -321,10 +339,11 @@ module.exports.updatePersonalInfo = async (req, res) => {
     employee.dob = await utility.convertStringToDate(dob)
     employee.timeZone = timeZone
     await employee.save()
+    const strippedEmployee = await stripEmployee(employee);
     const data = {
         status: 200,
         message: 'Personal Info updated successfully',
-        employee
+        employee: strippedEmployee
     }
     res.status(200).send(data)
 }
@@ -349,10 +368,11 @@ module.exports.updateSingleColor = async (req, res) => {
         employee.markModified('darkColorScheme');
     }
     await employee.save()
+    const strippedEmployee = await stripEmployee(employee);
     const data = {
         status: 200,
         message: 'Color updated successfully',
-        employee
+        employee: strippedEmployee
     }
     res.status(200).send(data)
 }
@@ -369,10 +389,11 @@ module.exports.updateDateTimeValues = async (req, res) => {
         res.status(500).send(data)
         return
     }
+    const strippedEmployee = await stripEmployee(employee);
     const data = {
         status: 200,
         message: 'Date and Time updated successfully',
-        employee
+        employee: strippedEmployee
     }
     res.status(200).send(data)
 }

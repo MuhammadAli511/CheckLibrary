@@ -30,6 +30,7 @@ function ProfileComponent() {
     const updateProfileButton = async  () => {
         const response = await updateProfile( position, phoneNumber, website, bio );
         if (response.status === 200) {
+            console.log(response.employee);
             toast(<SuccessToast message={response.message} />);
             dispatch(setEmployeeProfile(response.employee));
         } else {
