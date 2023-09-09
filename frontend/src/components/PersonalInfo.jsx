@@ -129,7 +129,7 @@ function PersonalInfo() {
                     <button className="rounded-lg px-4 py-3 mr-3 border" style={{ color: themeColors.text, backgroundColor: themeColors.background, borderColor: themeColors.cornerRadius }}>
                         Cancel
                     </button>
-                    <button onClick={updatePersonalInfoButton} className="rounded-lg px-5 py-3 bg-primary-light text-white">
+                    <button onClick={updatePersonalInfoButton} className="rounded-lg px-5 py-3" style={{ color: themeColors.text, backgroundColor: themeColors.primary }}>
                         Save
                     </button>
                 </div>
