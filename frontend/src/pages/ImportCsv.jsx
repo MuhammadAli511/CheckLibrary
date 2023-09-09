@@ -29,7 +29,7 @@ const ImportCsv = () => {
         <div className="flex flex-col h-screen" style={{ backgroundColor: themeColors.background }}>
             <ToastContainer 
                 position="top-right"
-                autoClose={3000}
+                autoClose={2000}
                 hideProgressBar
                 closeOnClick={true}
                 pauseOnHover={true}

@@ -50,7 +50,7 @@ const ForgotPassword = () => {
         <div className="bg-[#F7F7F7] min-h-screen">
             <ToastContainer 
                 position="top-right"
-                autoClose={3000}
+                autoClose={2000}
                 hideProgressBar
                 closeOnClick={true}
                 pauseOnHover={true}

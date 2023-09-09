@@ -23,7 +23,7 @@ function ProductMedia() {
         <div className="mt-4">
             <ToastContainer 
                 position="top-right"
-                autoClose={3000}
+                autoClose={2000}
                 hideProgressBar
                 closeOnClick={true}
                 pauseOnHover={true}

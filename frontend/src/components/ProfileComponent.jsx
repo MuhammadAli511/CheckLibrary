@@ -49,7 +49,7 @@ function ProfileComponent() {
         <div className="mt-4">
             <ToastContainer 
                 position="top-right"
-                autoClose={3000}
+                autoClose={2000}
                 hideProgressBar
                 closeOnClick={true}
                 pauseOnHover={true}
@@ -92,7 +92,7 @@ function ProfileComponent() {
                     <button onClick={clearFields} className="rounded-lg px-4 py-3 mr-3 border" style={{ color: themeColors.text, backgroundColor: themeColors.background, borderColor: themeColors.cornerRadius }}>
                         Cancel
                     </button>
-                    <button onClick={updateProfileButton} className="rounded-lg px-5 py-3 bg-primary-light text-white">
+                    <button onClick={updateProfileButton} className="rounded-lg px-5 py-3" style={{ color: themeColors.background, backgroundColor: themeColors.primary}}>
                         Save
                     </button>
                 </div>
