@@ -80,7 +80,7 @@ function getTimeForTimeZone(timezone, dateFormat, timeFormat) {
 function DigitalClock() {
     const [currentTime, setCurrentTime] = useState(new Date());
     const themeColors = useContext(ThemeContext);
-    const employeeDetails = useSelector(state => state.auth.authData?.employee);
+    const userDetails = useSelector(state => state.auth.authData?.user);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -98,7 +98,7 @@ function DigitalClock() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
                     {CLOCKS.map((clock, index) => {
-                        const { time, date, hour } = getTimeForTimeZone(clock.timezone, employeeDetails.dateFormat, employeeDetails.timeFormat);
+                        const { time, date, hour } = getTimeForTimeZone(clock.timezone, userDetails.dateFormat, userDetails.timeFormat);
                         const isDay = hour < 18 && hour > 6;
 
                         return (

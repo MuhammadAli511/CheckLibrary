@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const employeeController = require('../controllers/employeeController')
+const userController = require('../controllers/userController')
 const {requireAuth} = require('../middleware/auth')
 
 // GET  api/status/
@@ -8,41 +8,41 @@ router.get('/status',(req,res) => {
     res.status(200).send("App Status : Working")
 })
 
-// POST  api/employeeRoute/googleSignUp
-router.post('/employeeRoute/googleSignUp',employeeController.googleSignup)
+// POST  api/userRoute/googleSignUp
+router.post('/userRoute/googleSignUp',userController.googleSignup)
 
-// POST  api/employeeRoute/signup
-router.post('/employeeRoute/signup',employeeController.signup)
+// POST  api/userRoute/signup
+router.post('/userRoute/signup',userController.signup)
 
-// POST  api/employeeRoute/login
-router.post('/employeeRoute/login',employeeController.login)
+// POST  api/userRoute/login
+router.post('/userRoute/login',userController.login)
 
-// POST  api/employeeRoute/SendEmailforPasswordReset
-router.post('/employeeRoute/SendEmailforPasswordReset',employeeController.SendEmailforPasswordReset)
+// POST  api/userRoute/SendEmailforPasswordReset
+router.post('/userRoute/SendEmailforPasswordReset',userController.SendEmailforPasswordReset)
 
-// POST api/employeeRoute/ChangePasswordonReset
-router.post('/employeeRoute/ChangePasswordonReset',employeeController.ChangePasswordonReset)
+// POST api/userRoute/ChangePasswordonReset
+router.post('/userRoute/ChangePasswordonReset',userController.ChangePasswordonReset)
 
-// POST api/employeeRoute/fetchEmployeeDetails
-router.post('/employeeRoute/fetchEmployeeDetails', employeeController.fetchEmployeeDetails)
+// POST api/userRoute/fetchUserDetails
+router.post('/userRoute/fetchUserDetails', userController.fetchUserDetails)
 
-// POST api/employeeRoute/updateTheme
-router.post('/employeeRoute/updateTheme', requireAuth, employeeController.updateTheme)
+// POST api/userRoute/updateTheme
+router.post('/userRoute/updateTheme', requireAuth, userController.updateTheme)
 
-// POST api/employeeRoute/updateProfile
-router.post('/employeeRoute/updateProfile', requireAuth, employeeController.updateProfile)
+// POST api/userRoute/updateProfile
+router.post('/userRoute/updateProfile', requireAuth, userController.updateProfile)
 
-// POST api/employeeRoute/updatePersonalInfo
-router.post('/employeeRoute/updatePersonalInfo', requireAuth, employeeController.updatePersonalInfo)
+// POST api/userRoute/updatePersonalInfo
+router.post('/userRoute/updatePersonalInfo', requireAuth, userController.updatePersonalInfo)
 
-// POST api/employeeRoute/updateSingleColor
-router.post('/employeeRoute/updateSingleColor', requireAuth, employeeController.updateSingleColor)
+// POST api/userRoute/updateSingleColor
+router.post('/userRoute/updateSingleColor', requireAuth, userController.updateSingleColor)
 
-// POST api/employeeRoute/updateDateTimeValues
-router.post('/employeeRoute/updateDateTimeValues', requireAuth, employeeController.updateDateTimeValues)
+// POST api/userRoute/updateDateTimeValues
+router.post('/userRoute/updateDateTimeValues', requireAuth, userController.updateDateTimeValues)
 
-// POST api/employeeRoute/changePassword
-router.post('/employeeRoute/changePassword', requireAuth, employeeController.changePassword)
+// POST api/userRoute/changePassword
+router.post('/userRoute/changePassword', requireAuth, userController.changePassword)
 
 
 module.exports = router

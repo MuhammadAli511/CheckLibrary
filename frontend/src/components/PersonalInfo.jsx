@@ -7,29 +7,34 @@ import timezones from 'timezones-list';
 import { ThemeContext } from "../ThemeProvider";
 import CameraIcon from '../assets/camera.svg';
 import { updatePersonalInfo } from '../helper';
-import { setEmployeeProfile } from '../redux/actions';
+import { setUserProfile } from '../redux/actions';
 import '../toastCustomStyles.css';
 import ErrorToast from "./ErrorToast";
 import SuccessToast from "./SuccessToast";
+
+function convertDOB(dob) {
+    const date = DateTime.fromISO(dob);
+    return date.toFormat("yyyy-MM-dd");
+}
 
 
 function PersonalInfo() {
     const dispatch = useDispatch();
     const [uploadedImage, setUploadedImage] = useState(null);
-    const employeeDetails = useSelector(state => state.auth.authData?.employee);
-    const [firstName, setFirstName] = useState(employeeDetails.firstName || "");
-    const [lastName, setLastName] = useState(employeeDetails.lastName || "");
-    const [email, setEmail] = useState(employeeDetails.email || "");
-    const [timeZone, setTimeZone] = useState(employeeDetails.timeZone || "");
-    const [dob, setDob] = useState(employeeDetails.dob || "");
+    const userDetails = useSelector(state => state.auth.authData?.user);
+    const [firstName, setFirstName] = useState(userDetails.firstName || "");
+    const [lastName, setLastName] = useState(userDetails.lastName || "");
+    const [email, setEmail] = useState(userDetails.email || "");
+    const [timeZone, setTimeZone] = useState(userDetails.timeZone || "");
+    const [dob, setDob] = useState(userDetails.dob || "");
 
     useEffect(() => {
-        setFirstName(employeeDetails.firstName || "");
-        setLastName(employeeDetails.lastName || "");
-        setEmail(employeeDetails.email || "");
-        setTimeZone(employeeDetails.timeZone || "");
-        setDob(employeeDetails.dob || "");
-    }, [employeeDetails]);
+        setFirstName(userDetails.firstName || "");
+        setLastName(userDetails.lastName || "");
+        setEmail(userDetails.email || "");
+        setTimeZone(userDetails.timeZone || "");
+        setDob(convertDOB(userDetails.dob) || "");
+    }, [userDetails]);
 
     const themeColors = useContext(ThemeContext);
 
@@ -37,7 +42,11 @@ function PersonalInfo() {
         const response = await updatePersonalInfo( firstName, lastName, dob, timeZone );
         if (response.status === 200) {
             toast(<SuccessToast message={response.message} />);
-            dispatch(setEmployeeProfile(response.employee));
+            const user = response.user;
+            dispatch({
+                type: "UPDATE_PROFILE",
+                payload: user
+            });
         } else {
             toast(<ErrorToast message={response.message} />);
         }

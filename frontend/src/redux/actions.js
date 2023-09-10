@@ -1,10 +1,10 @@
 import { SET_THEME, UPDATE_PROFILE } from "../constants/actiontypes";
 import { setSettingTab, setTasksTab } from "./slice";
 
-export const setEmployeeProfile = (employeeData) => {
+export const setUserProfile = (userData) => {
     return {
         type: UPDATE_PROFILE,
-        payload: employeeData,
+        payload: userData,
     };
 };
 

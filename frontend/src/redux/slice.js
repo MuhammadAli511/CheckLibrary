@@ -3,7 +3,7 @@ import { AUTH, LOGOUT, SET_THEME, UPDATE_PROFILE } from "../constants/actiontype
 
 const initialState = {
     authData: {
-        employee: {
+        user: {
             selectedTheme: 'light',
         }
     }
@@ -17,7 +17,7 @@ const authReducer = (state = { authData: null }, action) => {
                 ...state, 
                 authData: {
                     token: action?.data?.token,
-                    employee: action.data.employee
+                    user: action.data.user
                 }
             };
         case LOGOUT:
@@ -28,8 +28,8 @@ const authReducer = (state = { authData: null }, action) => {
                 ...state,
                 authData: {
                     ...state.authData,
-                    employee: {
-                        ...state.authData.employee,
+                    user: {
+                        ...state.authData.user,
                         selectedTheme: action.payload,
                     }
                 }
@@ -39,7 +39,7 @@ const authReducer = (state = { authData: null }, action) => {
                 ...state,
                 authData: {
                     ...state.authData,
-                    employee: action.payload,
+                    user: action.payload,
                 }
             };
         default:

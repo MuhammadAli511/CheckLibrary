@@ -13,7 +13,7 @@ const getHeaders = () => {
 };
 
 export const googleSignUp = async ( firstName, lastName, email, timeZone ) => {
-    const response = await fetch(`${API_URL}/employeeRoute/googleSignUp`, {
+    const response = await fetch(`${API_URL}/userRoute/googleSignUp`, {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ firstName, lastName, email, timeZone }),
@@ -22,7 +22,7 @@ export const googleSignUp = async ( firstName, lastName, email, timeZone ) => {
 };
 
 export const signup = async ( firstName, lastName, email, password, defaultTimeZoneCode ) => {
-    const response = await fetch(`${API_URL}/employeeRoute/signup`, {
+    const response = await fetch(`${API_URL}/userRoute/signup`, {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ firstName, lastName, email, password, defaultTimeZoneCode }),
@@ -31,7 +31,7 @@ export const signup = async ( firstName, lastName, email, password, defaultTimeZ
 }
 
 export const login = async ( email, password ) => {
-    const response = await fetch(`${API_URL}/employeeRoute/login`, {
+    const response = await fetch(`${API_URL}/userRoute/login`, {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ email, password }),
@@ -40,7 +40,7 @@ export const login = async ( email, password ) => {
 }
 
 export const SendPasswordResetEmail = async ( email ) => {
-    const response = await fetch(`${API_URL}/employeeRoute/SendEmailforPasswordReset`, {
+    const response = await fetch(`${API_URL}/userRoute/SendEmailforPasswordReset`, {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ email }),
@@ -49,7 +49,7 @@ export const SendPasswordResetEmail = async ( email ) => {
 }
 
 export const ChangePasswordonReset = async ( new_password, confirm_password, token ) => {
-    const response = await fetch(`${API_URL}/employeeRoute/ChangePasswordonReset`, {
+    const response = await fetch(`${API_URL}/userRoute/ChangePasswordonReset`, {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ new_password, confirm_password, token }),
@@ -57,8 +57,8 @@ export const ChangePasswordonReset = async ( new_password, confirm_password, tok
     return await response.json();
 }
 
-export const fetchEmployeeDetails = async (email) => {
-    const response = await fetch(`${API_URL}/employeeRoute/fetchEmployeeDetails`, {
+export const fetchUserDetails = async (email) => {
+    const response = await fetch(`${API_URL}/userRoute/fetchUserDetails`, {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ email }),
@@ -67,7 +67,7 @@ export const fetchEmployeeDetails = async (email) => {
 }
 
 export const updateTheme = async (theme) => {
-    const response = await fetch(`${API_URL}/employeeRoute/updateTheme`, {
+    const response = await fetch(`${API_URL}/userRoute/updateTheme`, {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ theme }),
@@ -76,7 +76,7 @@ export const updateTheme = async (theme) => {
 }
 
 export const updateProfile = async (position, phoneNumber, website, bio) => {
-    const response = await fetch(`${API_URL}/employeeRoute/updateProfile`, {
+    const response = await fetch(`${API_URL}/userRoute/updateProfile`, {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ position, phoneNumber, website, bio }),
@@ -85,7 +85,7 @@ export const updateProfile = async (position, phoneNumber, website, bio) => {
 }
 
 export const updatePersonalInfo = async (firstName, lastName, dob, timeZone) => {
-    const response = await fetch(`${API_URL}/employeeRoute/updatePersonalInfo`, {
+    const response = await fetch(`${API_URL}/userRoute/updatePersonalInfo`, {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ firstName, lastName, dob, timeZone }),
@@ -94,7 +94,7 @@ export const updatePersonalInfo = async (firstName, lastName, dob, timeZone) => 
 }
 
 export const updateSingleColor = async (property, color, theme) => {
-    const response = await fetch(`${API_URL}/employeeRoute/updateSingleColor`, {
+    const response = await fetch(`${API_URL}/userRoute/updateSingleColor`, {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ property, color, theme }),
@@ -103,7 +103,7 @@ export const updateSingleColor = async (property, color, theme) => {
 }
 
 export const updateDateTimeValues = async (weekStartOn, dateFormat, timeFormat) => {
-    const response = await fetch(`${API_URL}/employeeRoute/updateDateTimeValues`, {
+    const response = await fetch(`${API_URL}/userRoute/updateDateTimeValues`, {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ weekStartOn, dateFormat, timeFormat }),
@@ -112,7 +112,7 @@ export const updateDateTimeValues = async (weekStartOn, dateFormat, timeFormat) 
 }
 
 export const changePassword = async (currentPassword, newPassword, confirmPassword) => {
-    const response = await fetch(`${API_URL}/employeeRoute/changePassword`, {
+    const response = await fetch(`${API_URL}/userRoute/changePassword`, {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ currentPassword, newPassword, confirmPassword }),

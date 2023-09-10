@@ -26,10 +26,10 @@ function ColorPicker({ color, setColor, label, theme }) {
         const response = await updateSingleColor(property, e.target.value, theme);
         if (response.status === 200) {
             toast(<SuccessToast message={response.message} />);
-            const employee = response.employee;
+            const user = response.user;
             dispatch({
                 type: "UPDATE_PROFILE",
-                payload: employee
+                payload: user
             });
         } else {
             toast(<ErrorToast message={response.message} />);
@@ -58,31 +58,31 @@ function ColorPicker({ color, setColor, label, theme }) {
 
 
 function ColorCodes() {
-    const employeeDetails = useSelector(state => state.auth.authData?.employee);
+    const userDetails = useSelector(state => state.auth.authData?.user);
 
     // Light Theme Colors
-    const [lightPrimary, setLightprimary] = useState(employeeDetails.lightColorScheme.primary);
-    const [lightText, setLightText] = useState(employeeDetails.lightColorScheme.text);
-    const [lightBackground, setLightBackground] = useState(employeeDetails.lightColorScheme.background);
-    const [lightBackground2, setLightBackground2] = useState(employeeDetails.lightColorScheme.background2);
-    const [lightCornerRadius, setLightCornerRadius] = useState(employeeDetails.lightColorScheme.cornerRadius);
-    const [lightWarning, setLightWarning] = useState(employeeDetails.lightColorScheme.warning);
-    const [lightStatus, setLightStatus] = useState(employeeDetails.lightColorScheme.status);
-    const [lightStatus1, setLightStatus1] = useState(employeeDetails.lightColorScheme.status1);
-    const [lightStatus2, setLightStatus2] = useState(employeeDetails.lightColorScheme.status2);
-    const [lightStatus3, setLightStatus3] = useState(employeeDetails.lightColorScheme.status3);
+    const [lightPrimary, setLightprimary] = useState(userDetails.lightColorScheme.primary);
+    const [lightText, setLightText] = useState(userDetails.lightColorScheme.text);
+    const [lightBackground, setLightBackground] = useState(userDetails.lightColorScheme.background);
+    const [lightBackground2, setLightBackground2] = useState(userDetails.lightColorScheme.background2);
+    const [lightCornerRadius, setLightCornerRadius] = useState(userDetails.lightColorScheme.cornerRadius);
+    const [lightWarning, setLightWarning] = useState(userDetails.lightColorScheme.warning);
+    const [lightStatus, setLightStatus] = useState(userDetails.lightColorScheme.status);
+    const [lightStatus1, setLightStatus1] = useState(userDetails.lightColorScheme.status1);
+    const [lightStatus2, setLightStatus2] = useState(userDetails.lightColorScheme.status2);
+    const [lightStatus3, setLightStatus3] = useState(userDetails.lightColorScheme.status3);
 
     // Dark Theme Colors
-    const [darkPrimary, setDarkPrimary] = useState(employeeDetails.darkColorScheme.primary);
-    const [darkText, setDarkText] = useState(employeeDetails.darkColorScheme.text);
-    const [darkBackground, setDarkBackground] = useState(employeeDetails.darkColorScheme.background);
-    const [darkBackground2, setDarkBackground2] = useState(employeeDetails.darkColorScheme.background2);
-    const [darkCornerRadius, setDarkCornerRadius] = useState(employeeDetails.darkColorScheme.cornerRadius);
-    const [darkWarning, setDarkWarning] = useState(employeeDetails.darkColorScheme.warning);
-    const [darkStatus, setDarkStatus] = useState(employeeDetails.darkColorScheme.status);
-    const [darkStatus1, setDarkStatus1] = useState(employeeDetails.darkColorScheme.status1);
-    const [darkStatus2, setDarkStatus2] = useState(employeeDetails.darkColorScheme.status2);
-    const [darkStatus3, setDarkStatus3] = useState(employeeDetails.darkColorScheme.status3);
+    const [darkPrimary, setDarkPrimary] = useState(userDetails.darkColorScheme.primary);
+    const [darkText, setDarkText] = useState(userDetails.darkColorScheme.text);
+    const [darkBackground, setDarkBackground] = useState(userDetails.darkColorScheme.background);
+    const [darkBackground2, setDarkBackground2] = useState(userDetails.darkColorScheme.background2);
+    const [darkCornerRadius, setDarkCornerRadius] = useState(userDetails.darkColorScheme.cornerRadius);
+    const [darkWarning, setDarkWarning] = useState(userDetails.darkColorScheme.warning);
+    const [darkStatus, setDarkStatus] = useState(userDetails.darkColorScheme.status);
+    const [darkStatus1, setDarkStatus1] = useState(userDetails.darkColorScheme.status1);
+    const [darkStatus2, setDarkStatus2] = useState(userDetails.darkColorScheme.status2);
+    const [darkStatus3, setDarkStatus3] = useState(userDetails.darkColorScheme.status3);
 
     const lightColorsPrimary = [
         { label: 'Primary', color: lightPrimary, setColor: setLightprimary, theme: 'light' },

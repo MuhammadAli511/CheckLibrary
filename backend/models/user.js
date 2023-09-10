@@ -27,7 +27,7 @@ const defaultDarkColorScheme = {
 }
 
 
-const employeeSchema = mongoose.Schema({
+const userSchema = mongoose.Schema({
     firstName: {
         type: String,
     },
@@ -94,4 +94,4 @@ const employeeSchema = mongoose.Schema({
         default: ['Saturday','Sunday']
     },
 })
-module.exports = mongoose.model('Employees',employeeSchema)
+module.exports = mongoose.model('Users',userSchema)

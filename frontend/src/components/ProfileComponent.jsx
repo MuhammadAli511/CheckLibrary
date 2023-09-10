@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { ThemeContext } from "../ThemeProvider";
 import { updateProfile } from '../helper';
-import { setEmployeeProfile } from '../redux/actions';
+import { setUserProfile } from '../redux/actions';
 // Toast
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -14,35 +14,35 @@ function ProfileComponent() {
     const dispatch = useDispatch();
     
     const themeColors = useContext(ThemeContext);
-    const employeeDetails = useSelector(state => state.auth.authData?.employee);
-    const [position, setPosition] = useState(employeeDetails.position || "");
-    const [phoneNumber, setPhoneNumber] = useState(employeeDetails.phoneNumber || "");
-    const [website, setWebsite] = useState(employeeDetails.website || "");
-    const [bio, setBio] = useState(employeeDetails.bio || "");
+    const userDetails = useSelector(state => state.auth.authData?.user);
+    const [position, setPosition] = useState(userDetails.position || "");
+    const [phoneNumber, setPhoneNumber] = useState(userDetails.phoneNumber || "");
+    const [website, setWebsite] = useState(userDetails.website || "");
+    const [bio, setBio] = useState(userDetails.bio || "");
 
 
     useEffect(() => {
-        setPosition(employeeDetails.position || "");
-        setPhoneNumber(employeeDetails.phoneNumber || "");
-        setWebsite(employeeDetails.website || "");
-        setBio(employeeDetails.bio || "");
-    }, [employeeDetails]);
+        setPosition(userDetails.position || "");
+        setPhoneNumber(userDetails.phoneNumber || "");
+        setWebsite(userDetails.website || "");
+        setBio(userDetails.bio || "");
+    }, [userDetails]);
 
     const updateProfileButton = async  () => {
         const response = await updateProfile( position, phoneNumber, website, bio );
         if (response.status === 200) {
             toast(<SuccessToast message={response.message} />);
-            dispatch(setEmployeeProfile(response.employee));
+            dispatch(setUserProfile(response.user));
         } else {
             toast(<ErrorToast message={response.message} />);
         }
     }
 
     const clearFields = () => {
-        setPosition(employeeDetails.position || "");
-        setPhoneNumber(employeeDetails.phoneNumber || "");
-        setWebsite(employeeDetails.website || "");
-        setBio(employeeDetails.bio || "");
+        setPosition(userDetails.position || "");
+        setPhoneNumber(userDetails.phoneNumber || "");
+        setWebsite(userDetails.website || "");
+        setBio(userDetails.bio || "");
     }
 
     return (

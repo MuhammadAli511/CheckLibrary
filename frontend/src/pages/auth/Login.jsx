@@ -42,12 +42,12 @@ const Login = () => {
                 toast(<ErrorToast message="Can not reach Server" />);
             }
             if (response.status === 200) {
-                const employee = response.employee
+                const user = response.user
                 dispatch({
                     type: "AUTH",
                     data: {
                         token,
-                        employee
+                        user
                     }
                 });
                 navigate("/dashboard");
@@ -73,13 +73,13 @@ const Login = () => {
                 toast(<ErrorToast message="Can not reach Server" />);
             }
             if (response.status === 200) {
-                const employee = response.employee;
+                const user = response.user;
                 const token = response.token;
                 dispatch({
                     type: "AUTH",
                     data: {
                         token,
-                        employee
+                        user
                     }
                 });
                 navigate("/dashboard");

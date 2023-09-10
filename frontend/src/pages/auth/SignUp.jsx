@@ -46,12 +46,12 @@ const SignUp = () => {
                 toast(<ErrorToast message="Can not reach Server" />);
             }
             if (response.status === 200) {
-                const employee = response.employee;
+                const user = response.user;
                 dispatch({
                     type: "AUTH",
                     data: {
                         token,
-                        employee
+                        user
                     }
                 });
                 navigate("/dashboard");

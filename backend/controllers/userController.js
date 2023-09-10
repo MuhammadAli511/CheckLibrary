@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const Employee = require('../models/employee')
+const User = require('../models/user')
 const utility = require('../utilities')
 
 async function generateToken(email) {
@@ -14,17 +14,17 @@ async function generateToken(email) {
     return token;
 }
 
-async function stripEmployee(employee) {
-    const strippedEmployee = employee.toObject ? employee.toObject() : employee;
+async function stripUser(user) {
+    const strippedUser = user.toObject ? user.toObject() : user;
     
-    if (strippedEmployee.password) {
-        strippedEmployee.password = null;
-        strippedEmployee.accountType = "email";
+    if (strippedUser.password) {
+        strippedUser.password = null;
+        strippedUser.accountType = "email";
     } else {
-        strippedEmployee.accountType = "google";
+        strippedUser.accountType = "google";
     }
     
-    return strippedEmployee;
+    return strippedUser;
 }
 
 module.exports.googleSignup = async (req, res) => {
@@ -37,36 +37,36 @@ module.exports.googleSignup = async (req, res) => {
         res.status(500).send(data)
         return
     }
-    const employeeExists = await Employee.findOne({ email })
-    role = 'employee'
+    const userExists = await User.findOne({ email })
+    role = 'user'
 
-    if (employeeExists) {
-        const updateEmployee = await Employee.findOneAndUpdate({ email }, { firstName, lastName, timeZone, role })
-        const strippedEmployee = await stripEmployee(updateEmployee);
-        if (updateEmployee) {
+    if (userExists) {
+        const updateUser = await User.findOneAndUpdate({ email }, { firstName, lastName, timeZone, role })
+        const strippedUser = await stripUser(updateUser);
+        if (updateUser) {
             const data = {
                 status: 200,
                 message: 'Sign up successful',
-                employee: strippedEmployee
+                user: strippedUser
             }
             res.status(200).send(data)
             return
         }
         const data = {
             status: 500,
-            message: 'Error: Employee signup failed'
+            message: 'Error: User signup failed'
         }
         res.status(500).send(data)
         return
     }
 
-    const employee = await Employee.create({ firstName, lastName, email, timeZone, role })
-    if (employee) {
-        const strippedEmployee = await stripEmployee(employee);
+    const user = await User.create({ firstName, lastName, email, timeZone, role })
+    if (user) {
+        const strippedUser = await stripUser(user);
         const data = {
             status: 200,
             message: 'Sign up successful',
-            employee: strippedEmployee
+            user: strippedUser
         }
         res.status(200).send(data)
         return
@@ -89,9 +89,9 @@ module.exports.signup = async (req, res) => {
         res.status(500).send(data)
         return
     }
-    const employeeExists = await Employee.findOne({ email })
+    const userExists = await User.findOne({ email })
 
-    if (employeeExists) {
+    if (userExists) {
         const data = {
             status: 500,
             message: 'Email already exists'
@@ -102,9 +102,9 @@ module.exports.signup = async (req, res) => {
 
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(password, salt)
-    const role = 'employee'
-    const employee = await Employee.create({ firstName, lastName, email, password: hashedPassword, defaultTimeZoneCode, role })
-    if (employee) {
+    const role = 'user'
+    const user = await User.create({ firstName, lastName, email, password: hashedPassword, defaultTimeZoneCode, role })
+    if (user) {
         const data = {
             status: 200,
             message: 'Sign up successful',
@@ -131,8 +131,8 @@ module.exports.login = async (req, res) => {
         return
     }
 
-    const employee = await Employee.findOne({ email })
-    if (!employee) {
+    const user = await User.findOne({ email })
+    if (!user) {
         const data = {
             status: 500,
             message: 'No account found with this email'
@@ -141,7 +141,7 @@ module.exports.login = async (req, res) => {
         return
     }
 
-    if (!employee.password) {
+    if (!user.password) {
         const data = {
             status: 500,
             message: 'No account found with this email'
@@ -150,7 +150,7 @@ module.exports.login = async (req, res) => {
         return
     }
 
-    const passwordMatch = await bcrypt.compare(password, employee.password)
+    const passwordMatch = await bcrypt.compare(password, user.password)
     if (!passwordMatch) {
         const data = {
             status: 500,
@@ -162,11 +162,11 @@ module.exports.login = async (req, res) => {
 
     const token = await generateToken(email)
 
-    const strippedEmployee = await stripEmployee(employee);
+    const strippedUser = await stripUser(user);
     const data = {
         status: 200,
         message: 'Login successful',
-        employee: strippedEmployee,
+        user: strippedUser,
         token
     }
     res.status(200).send(data)
@@ -175,11 +175,11 @@ module.exports.login = async (req, res) => {
 
 module.exports.SendEmailforPasswordReset = async (req, res) => {
     const { email } = await req.body
-    const employee = await Employee.findOne({ email })
-    if (!employee) {
+    const user = await User.findOne({ email })
+    if (!user) {
         const data = {
             status: 500,
-            message: 'Error: Employee does not exist'
+            message: 'Error: User does not exist'
         }
         res.status(500).send(data)
         return
@@ -192,8 +192,8 @@ module.exports.SendEmailforPasswordReset = async (req, res) => {
 
     const token = generateToken(email)
 
-    employee.reset_token = token;
-    await employee.save();
+    user.reset_token = token;
+    await user.save();
 
     var RESETPASS_AUTH_USER = process.env.RESETPASS_AUTH_USER;
     var RESETPASS_AUTH_PASS = process.env.RESETPASS_AUTH_PASS;
@@ -230,8 +230,8 @@ module.exports.SendEmailforPasswordReset = async (req, res) => {
 
 module.exports.ChangePasswordonReset = async (req, res) => {
     const { new_password, confirm_password, received_token } = await req.body
-    const employee = await Employee.findOne({ received_token })
-    if (!employee) {
+    const user = await User.findOne({ received_token })
+    if (!user) {
         const data = {
             status: 500,
             message: 'Error: Token does not exist'
@@ -247,35 +247,35 @@ module.exports.ChangePasswordonReset = async (req, res) => {
 
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(new_password, salt)
-    const employeeUpdate = await Employee.findOneAndUpdate({ received_token }, { password: hashedPassword })
+    const userUpdate = await User.findOneAndUpdate({ received_token }, { password: hashedPassword })
     res.status(200).send(data)
 
 }
 
-module.exports.fetchEmployeeDetails = async (req, res) => {
+module.exports.fetchUserDetails = async (req, res) => {
     const { email } = await req.body
-    const employee = await Employee.findOne({ email })
-    if (!employee) {
+    const user = await User.findOne({ email })
+    if (!user) {
         const data = {
             status: 500,
-            message: 'Error: Employee does not exist'
+            message: 'Error: User does not exist'
         }
         res.status(500).send(data)
         return
     }
-    const strippedEmployee = await stripEmployee(employee);
+    const strippedUser = await stripUser(user);
     const data = {
         status: 200,
-        message: 'Employee fetched successfully',
-        employee: strippedEmployee
+        message: 'User fetched successfully',
+        user: strippedUser
     }
     res.status(200).send(data)
 }
 
 module.exports.updateTheme = async (req, res) => {
     const { theme } = await req.body
-    const employee = await Employee.findOne({ email: req.email })
-    if (!employee) {
+    const user = await User.findOne({ email: req.email })
+    if (!user) {
         const data = {
             status: 500,
             message: 'Internal Server Error'
@@ -283,21 +283,21 @@ module.exports.updateTheme = async (req, res) => {
         res.status(500).send(data)
         return
     }
-    employee.selectedTheme = theme
-    await employee.save()
-    const strippedEmployee = await stripEmployee(employee);
+    user.selectedTheme = theme
+    await user.save()
+    const strippedUser = await stripUser(user);
     const data = {
         status: 200,
         message: 'Theme updated successfully',
-        employee: strippedEmployee
+        user: strippedUser
     }
     res.status(200).send(data)
 }
 
 module.exports.updateProfile = async (req, res) => {
     const { position, phoneNumber, website, bio } = await req.body
-    const employee = await Employee.findOne({ email: req.email })
-    if (!employee) {
+    const user = await User.findOne({ email: req.email })
+    if (!user) {
         const data = {
             status: 500,
             message: 'Internal Server Error'
@@ -305,24 +305,24 @@ module.exports.updateProfile = async (req, res) => {
         res.status(500).send(data)
         return
     }
-    employee.position = position
-    employee.phoneNumber = phoneNumber
-    employee.website = website
-    employee.bio = bio
-    await employee.save()
-    const strippedEmployee = await stripEmployee(employee);
+    user.position = position
+    user.phoneNumber = phoneNumber
+    user.website = website
+    user.bio = bio
+    await user.save()
+    const strippedUser = await stripUser(user);
     const data = {
         status: 200,
         message: 'Profile updated successfully',
-        employee: strippedEmployee
+        user: strippedUser
     }
     res.status(200).send(data)
 }
 
 module.exports.updatePersonalInfo = async (req, res) => {
     const { firstName, lastName, dob, timeZone } = await req.body
-    const employee = await Employee.findOne({ email: req.email })
-    if (!employee) {
+    const user = await User.findOne({ email: req.email })
+    if (!user) {
         const data = {
             status: 500,
             message: 'Internal Server Error'
@@ -330,16 +330,16 @@ module.exports.updatePersonalInfo = async (req, res) => {
         res.status(500).send(data)
         return
     }
-    employee.firstName = firstName
-    employee.lastName = lastName
-    employee.dob = await utility.convertStringToDate(dob)
-    employee.timeZone = timeZone
-    await employee.save()
-    const strippedEmployee = await stripEmployee(employee);
+    user.firstName = firstName
+    user.lastName = lastName
+    user.dob = await utility.convertStringToDate(dob)
+    user.timeZone = timeZone
+    await user.save()
+    const strippedUser = await stripUser(user);
     const data = {
         status: 200,
         message: 'Personal Info updated successfully',
-        employee: strippedEmployee
+        user: strippedUser
     }
     res.status(200).send(data)
 }
@@ -347,8 +347,8 @@ module.exports.updatePersonalInfo = async (req, res) => {
 module.exports.updateSingleColor = async (req, res) => {
     const { property, color, theme } = await req.body
     
-    const employee = await Employee.findOne({ email: req.email })
-    if (!employee) {
+    const user = await User.findOne({ email: req.email })
+    if (!user) {
         const data = {
             status: 500,
             message: 'Internal Server Error'
@@ -357,18 +357,18 @@ module.exports.updateSingleColor = async (req, res) => {
         return
     }
     if (theme === 'light') {
-        employee.lightColorScheme[property] = color
-        employee.markModified('lightColorScheme');
+        user.lightColorScheme[property] = color
+        user.markModified('lightColorScheme');
     } else {
-        employee.darkColorScheme[property] = color
-        employee.markModified('darkColorScheme');
+        user.darkColorScheme[property] = color
+        user.markModified('darkColorScheme');
     }
-    await employee.save()
-    const strippedEmployee = await stripEmployee(employee);
+    await user.save()
+    const strippedUser = await stripUser(user);
     const data = {
         status: 200,
         message: 'Color updated successfully',
-        employee: strippedEmployee
+        user: strippedUser
     }
     res.status(200).send(data)
 }
@@ -376,8 +376,8 @@ module.exports.updateSingleColor = async (req, res) => {
 module.exports.updateDateTimeValues = async (req, res) => {
     const { weekStartOn, dateFormat, timeFormat } = await req.body
 
-    const employee = await Employee.findOneAndUpdate({ email: req.email }, { weekStartOn: weekStartOn, dateFormat: dateFormat, timeFormat: timeFormat }, { new: true })
-    if (!employee) {
+    const user = await User.findOneAndUpdate({ email: req.email }, { weekStartOn: weekStartOn, dateFormat: dateFormat, timeFormat: timeFormat }, { new: true })
+    if (!user) {
         const data = {
             status: 500,
             message: 'Internal Server Error'
@@ -385,11 +385,11 @@ module.exports.updateDateTimeValues = async (req, res) => {
         res.status(500).send(data)
         return
     }
-    const strippedEmployee = await stripEmployee(employee);
+    const strippedUser = await stripUser(user);
     const data = {
         status: 200,
         message: 'Date and Time updated successfully',
-        employee: strippedEmployee
+        user: strippedUser
     }
     res.status(200).send(data)
 }
@@ -414,8 +414,8 @@ module.exports.changePassword = async (req, res) => {
         return
     }
 
-    const employee = await Employee.findOne({ email: req.email })
-    if (!employee) {
+    const user = await User.findOne({ email: req.email })
+    if (!user) {
         const data = {
             status: 500,
             message: 'Internal Server Error'
@@ -424,7 +424,7 @@ module.exports.changePassword = async (req, res) => {
         return
     }
 
-    const passwordMatch = await bcrypt.compare(currentPassword, employee.password)
+    const passwordMatch = await bcrypt.compare(currentPassword, user.password)
     if (!passwordMatch) {
         const data = {
             status: 500,
@@ -436,13 +436,13 @@ module.exports.changePassword = async (req, res) => {
 
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(newPassword, salt)
-    employee.password = hashedPassword
-    await employee.save()
-    const strippedEmployee = await stripEmployee(employee);
+    user.password = hashedPassword
+    await user.save()
+    const strippedUser = await stripUser(user);
     const data = {
         status: 200,
         message: 'Password updated successfully',
-        employee: strippedEmployee
+        user: strippedUser
     }
     res.status(200).send(data)
 }

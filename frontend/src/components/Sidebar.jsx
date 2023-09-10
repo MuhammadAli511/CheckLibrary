@@ -9,15 +9,15 @@ const Sidebar = () => {
   const location = useLocation();
 
   const themeColors = useContext(ThemeContext);
-  const employee = useSelector(state => state.auth.authData?.employee);
+  const user = useSelector(state => state.auth.authData?.user);
 
   const getSidebarTextColor = () => {
-    if (employee?.selectedTheme === "light") {
-      return employee?.darkColorScheme.text;
-    } else if (employee?.selectedTheme === "dark") {
-      return employee?.lightColorScheme.text;
+    if (user?.selectedTheme === "light") {
+      return user?.darkColorScheme.text;
+    } else if (user?.selectedTheme === "dark") {
+      return user?.lightColorScheme.text;
     } else {
-      return employee?.lightColorScheme.text;
+      return user?.lightColorScheme.text;
     }
   };
 
@@ -32,9 +32,9 @@ const Sidebar = () => {
     { name: "Settings", path: "/settings", soon: false, iconBlack: settings, iconWhite: settingsSelected },
   ];
   const getSidebarIconColor = (item1, item2) => {
-    if (employee?.selectedTheme === "light") {
+    if (user?.selectedTheme === "light") {
       return item1;
-    } else if (employee?.selectedTheme === "dark") {
+    } else if (user?.selectedTheme === "dark") {
       return item2;
     } else {
       return item1;

@@ -8,7 +8,7 @@ function classNames(...classes) {
 
 export default function SettingTabs() {
     const dispatch = useDispatch();
-    const employee = useSelector(state => state.auth.authData?.employee);
+    const user = useSelector(state => state.auth.authData?.user);
 
     let initialTabs = [
         { name: 'My Account', current: true },
@@ -24,7 +24,7 @@ export default function SettingTabs() {
         { name: 'Tracking Pixel', current: false },
     ];
 
-    if (employee?.accountType === 'google') {
+    if (user?.accountType === 'google') {
         initialTabs = initialTabs.filter(tab => tab.name !== 'Security');
     }
 

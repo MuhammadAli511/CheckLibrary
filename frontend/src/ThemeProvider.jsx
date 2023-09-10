@@ -4,14 +4,14 @@ import { useSelector } from "react-redux";
 export const ThemeContext = React.createContext();
 
 export const ThemeProvider = ({ children }) => {
-  const employee = useSelector(state => state.auth.authData?.employee);
+  const user = useSelector(state => state.auth.authData?.user);
   var currentTheme;
-  if (employee?.selectedTheme === "light") {
-    currentTheme = employee?.lightColorScheme;
-  } else if (employee?.selectedTheme === "dark") {
-    currentTheme = employee?.darkColorScheme;
+  if (user?.selectedTheme === "light") {
+    currentTheme = user?.lightColorScheme;
+  } else if (user?.selectedTheme === "dark") {
+    currentTheme = user?.darkColorScheme;
   } else {
-    currentTheme = employee?.lightColorScheme;
+    currentTheme = user?.lightColorScheme;
   }
   return (
     <ThemeContext.Provider value={currentTheme}>

@@ -15,9 +15,9 @@ import SuccessToast from "./SuccessToast";
 
 function Appearance() {
     const dispatch = useDispatch();
-    const employee = useSelector(state => state.auth.authData?.employee);
+    const user = useSelector(state => state.auth.authData?.user);
     const themeColors = useContext(ThemeContext);
-    const currentTheme = employee?.selectedTheme || 'light';
+    const currentTheme = user?.selectedTheme || 'light';
     
     const handleThemeChange = async (selectedTheme) => {
         const response = await updateTheme(selectedTheme);
