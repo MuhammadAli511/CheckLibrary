@@ -27,7 +27,7 @@ const tabComponents = {
     'Notifications': Notifications,
     'Custom Fields': CustomFields,
     'Branding': Branding,
-    'Nav Sidebar': NavSideBar,
+    'Navigation Sidebar': NavSideBar,
     // 'Tracking Pixel': TrackingPixel
 };
 

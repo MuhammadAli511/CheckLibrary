@@ -20,9 +20,9 @@ const CLOCKS = [
 
 function getTimeFormatBool(timeFormat) {
     switch(timeFormat) {
-        case '12 Hour':
+        case '12 Hours':
             return true;
-        case '24 Hour':
+        case '24 Hours':
             return false;
         default:
             return true;

@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const User = require('../models/user')
+const Token = require('../models/token')
 const utility = require('../utilities')
 
 async function generateToken(email) {
@@ -38,10 +39,9 @@ module.exports.googleSignup = async (req, res) => {
         return
     }
     const userExists = await User.findOne({ email })
-    role = 'user'
 
     if (userExists) {
-        const updateUser = await User.findOneAndUpdate({ email }, { firstName, lastName, timeZone, role })
+        const updateUser = await User.findOneAndUpdate({ email }, { firstName, lastName, timeZone })
         const strippedUser = await stripUser(updateUser);
         if (updateUser) {
             const data = {
@@ -60,7 +60,7 @@ module.exports.googleSignup = async (req, res) => {
         return
     }
 
-    const user = await User.create({ firstName, lastName, email, timeZone, role })
+    const user = await User.create({ firstName, lastName, email, timeZone })
     if (user) {
         const strippedUser = await stripUser(user);
         const data = {
@@ -76,7 +76,6 @@ module.exports.googleSignup = async (req, res) => {
         message: 'Signup failed'
     }
     res.status(500).send(data)
-    return
 }
 
 module.exports.signup = async (req, res) => {
@@ -102,8 +101,10 @@ module.exports.signup = async (req, res) => {
 
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(password, salt)
-    const role = 'user'
-    const user = await User.create({ firstName, lastName, email, password: hashedPassword, defaultTimeZoneCode, role })
+    const user = await User.create({ firstName, lastName, email, password: hashedPassword, defaultTimeZoneCode })
+    const token = await new Token({ userId: user._id, token: await generateToken(email) }).save()
+    const url = `${process.env.BASE_URL}/users/${user._id}/verify/${token.token}`
+    await utility.sendVerificationEmail(user, url)
     if (user) {
         const data = {
             status: 200,
@@ -117,7 +118,6 @@ module.exports.signup = async (req, res) => {
         message: 'Signup failed'
     }
     res.status(500).send(data)
-    return
 }
 
 module.exports.login = async (req, res) => {
@@ -195,8 +195,8 @@ module.exports.SendEmailforPasswordReset = async (req, res) => {
     user.reset_token = token;
     await user.save();
 
-    var RESETPASS_AUTH_USER = process.env.RESETPASS_AUTH_USER;
-    var RESETPASS_AUTH_PASS = process.env.RESETPASS_AUTH_PASS;
+    let RESETPASS_AUTH_USER = process.env.RESETPASS_AUTH_USER;
+    let RESETPASS_AUTH_PASS = process.env.RESETPASS_AUTH_PASS;
 
     // Create a transporter with your Gmail account settings
     const transporter = nodemailer.createTransport({
@@ -240,14 +240,16 @@ module.exports.ChangePasswordonReset = async (req, res) => {
         return
     }
 
-    const data = {
-        status: 200,
-        message: 'Password Updated successfully!',
-    }
+    
 
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(new_password, salt)
     const userUpdate = await User.findOneAndUpdate({ received_token }, { password: hashedPassword })
+    const data = {
+        status: 200,
+        message: 'Password Updated successfully!',
+        user: stripUser(userUpdate)
+    }
     res.status(200).send(data)
 
 }

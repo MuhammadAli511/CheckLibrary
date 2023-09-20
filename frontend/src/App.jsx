@@ -1,5 +1,5 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import { AddProduct, CheckYourMail, Dashboard, ForgotPassword, ImportCsv, Login, Marketplace, NotFound, Onboarding, Products, ResetPassword, ResetPasswordSuccess, Settings, SignUp, Tasks } from "./pages";
+import { AddProduct, CheckYourMail, Dashboard, ForgotPassword, ImportCsv, Login, Marketplace, NotFound, Onboarding, Products, ResetPassword, ResetPasswordSuccess, Settings, SignUp, Tasks, VerifyEmail } from "./pages";
 function App() {
   
   return (
@@ -19,6 +19,7 @@ function App() {
         <Route path="/marketplace" element={<Marketplace />} />
         <Route path="/import" element={<ImportCsv />} />
         <Route path="/addProduct" element={<AddProduct />} />
+        <Route path="/verifyEmail" element={<VerifyEmail />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

@@ -41,9 +41,6 @@ const userSchema = mongoose.Schema({
     password: {
         type: String,
     },
-    role: {
-        type: String,
-    },
     reset_token: {
         type: String,
     },
@@ -92,6 +89,10 @@ const userSchema = mongoose.Schema({
     daysOff: {
         type: Array,
         default: ['Saturday','Sunday']
+    },
+    verified: {
+        type: Boolean,
+        default: false
     },
 })
 module.exports = mongoose.model('Users',userSchema)

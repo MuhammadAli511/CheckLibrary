@@ -20,7 +20,7 @@ export default function SettingTabs() {
         { name: 'Notifications', current: false },
         { name: 'Custom Fields', current: false },
         { name: 'Branding', current: false },
-        { name: 'Nav Sidebar', current: false },
+        { name: 'Navigation Sidebar', current: false },
         { name: 'Tracking Pixel', current: false },
     ];
 
