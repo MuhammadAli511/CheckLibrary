@@ -26,41 +26,15 @@ const defaultDarkColorScheme = {
     status3: '#b7f8ff',
 }
 
-
-const userSchema = mongoose.Schema({
-    firstName: {
+const workspaceSchema = mongoose.Schema({
+    name: {
         type: String,
+        required: true,
     },
-    lastName: {
-        type: String,
-    },
-    email: {
-        type: String,
-        unique: true
-    },
-    password: {
-        type: String,
-    },
-    reset_token: {
-        type: String,
-    },
-    dob: {
-        type: Date,
-    },
-    timeZone: {
-        type: String,
-    },
-    position: {
-        type: String,
-    },
-    phoneNumber: {
-        type: String,
-    },
-    website: {
-        type: String,
-    },
-    bio: {
-        type: String,
+    ownerId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'users'
     },
     lightColorScheme: {
         type: Object,
@@ -90,9 +64,6 @@ const userSchema = mongoose.Schema({
         type: Array,
         default: ['Saturday','Sunday']
     },
-    verified: {
-        type: Boolean,
-        default: false
-    },
 })
-module.exports = mongoose.model('Users',userSchema)
+
+module.exports = mongoose.model('Workspaces', workspaceSchema)

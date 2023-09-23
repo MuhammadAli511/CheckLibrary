@@ -7,7 +7,6 @@ import timezones from 'timezones-list';
 import { ThemeContext } from "../ThemeProvider";
 import CameraIcon from '../assets/camera.svg';
 import { updatePersonalInfo } from '../helper';
-import { setUserProfile } from '../redux/actions';
 import '../toastCustomStyles.css';
 import ErrorToast from "./ErrorToast";
 import SuccessToast from "./SuccessToast";
@@ -43,9 +42,10 @@ function PersonalInfo() {
         if (response.status === 200) {
             toast(<SuccessToast message={response.message} />);
             const user = response.user;
+            const workspace = response.workspace;
             dispatch({
                 type: "UPDATE_PROFILE",
-                payload: user
+                payload: {user, workspace}
             });
         } else {
             toast(<ErrorToast message={response.message} />);

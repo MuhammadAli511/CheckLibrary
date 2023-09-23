@@ -1,12 +1,16 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const User = require('../models/user')
-const Token = require('../models/token')
+const User = require('../models/users')
+const Token = require('../models/tokens')
 const utility = require('../utilities')
+const workspaceService = require('../services/workspaceService')
 
-async function generateToken(email) {
+async function generateToken(email, objectId) {
     const token = jwt.sign(
-        { email },
+        {
+            email,
+            objectId
+        },
         process.env.JWT_SECRET,
         {
             algorithm: 'HS256'
@@ -14,6 +18,7 @@ async function generateToken(email) {
     );
     return token;
 }
+
 
 async function stripUser(user) {
     const strippedUser = user.toObject ? user.toObject() : user;
@@ -28,8 +33,9 @@ async function stripUser(user) {
     return strippedUser;
 }
 
+
 module.exports.googleSignup = async (req, res) => {
-    const { firstName, lastName, email, timeZone } = await req.body
+    const { firstName, lastName, email, timeZone, accountStatus } = await req.body
     if (!firstName || !lastName || !email || !timeZone) {
         const data = {
             status: 500,
@@ -43,11 +49,14 @@ module.exports.googleSignup = async (req, res) => {
     if (userExists) {
         const updateUser = await User.findOneAndUpdate({ email }, { firstName, lastName, timeZone })
         const strippedUser = await stripUser(updateUser);
+        const token = await generateToken(email, updateUser._id)
         if (updateUser) {
             const data = {
                 status: 200,
-                message: 'Sign up successful',
-                user: strippedUser
+                message: 'Sign in successful',
+                user: strippedUser,
+                token,
+                workspace: await workspaceService.getWorkspaceById(updateUser.selectedWorkspace)
             }
             res.status(200).send(data)
             return
@@ -60,13 +69,16 @@ module.exports.googleSignup = async (req, res) => {
         return
     }
 
-    const user = await User.create({ firstName, lastName, email, timeZone })
+    const user = await User.create({ firstName, lastName, email, timeZone, accountStatus })
     if (user) {
+        const token = await generateToken(email, user._id)
         const strippedUser = await stripUser(user);
         const data = {
             status: 200,
             message: 'Sign up successful',
-            user: strippedUser
+            user: strippedUser,
+            token,
+            workspace: await workspaceService.getWorkspaceById(user.selectedWorkspace)
         }
         res.status(200).send(data)
         return
@@ -79,7 +91,7 @@ module.exports.googleSignup = async (req, res) => {
 }
 
 module.exports.signup = async (req, res) => {
-    const { firstName, lastName, email, password, defaultTimeZoneCode } = await req.body
+    const { firstName, lastName, email, password, defaultTimeZoneCode, accountStatus } = await req.body
     if (!firstName || !lastName || !email || !password || !defaultTimeZoneCode) {
         const data = {
             status: 500,
@@ -101,14 +113,17 @@ module.exports.signup = async (req, res) => {
 
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(password, salt)
-    const user = await User.create({ firstName, lastName, email, password: hashedPassword, defaultTimeZoneCode })
-    const token = await new Token({ userId: user._id, token: await generateToken(email) }).save()
-    const url = `${process.env.BASE_URL}/users/${user._id}/verify/${token.token}`
+    const user = await User.create({ firstName, lastName, email, password: hashedPassword, defaultTimeZoneCode, accountStatus })
+    const emailToken = await new Token({ userId: user._id, token: await generateToken(email, user._id) }).save()
+    const url = `${process.env.BASE_URL}/users/${user._id}/verify/${emailToken.token}`
     await utility.sendVerificationEmail(user, url)
+    const token = await generateToken(email, user._id)
     if (user) {
         const data = {
             status: 200,
             message: 'Sign up successful',
+            user: stripUser(user),
+            token
         }
         res.status(200).send(data)
         return
@@ -160,14 +175,15 @@ module.exports.login = async (req, res) => {
         return
     }
 
-    const token = await generateToken(email)
+    const token = await generateToken(email, user._id)
 
     const strippedUser = await stripUser(user);
     const data = {
         status: 200,
         message: 'Login successful',
         user: strippedUser,
-        token
+        token,
+        workspace: await workspaceService.getWorkspaceById(user.selectedWorkspace)
     }
     res.status(200).send(data)
 
@@ -190,7 +206,7 @@ module.exports.SendEmailforPasswordReset = async (req, res) => {
         message: 'Email sent successfully',
     }
 
-    const token = generateToken(email)
+    const token = generateToken(email, user._id);
 
     user.reset_token = token;
     await user.save();
@@ -254,148 +270,6 @@ module.exports.ChangePasswordonReset = async (req, res) => {
 
 }
 
-module.exports.fetchUserDetails = async (req, res) => {
-    const { email } = await req.body
-    const user = await User.findOne({ email })
-    if (!user) {
-        const data = {
-            status: 500,
-            message: 'Error: User does not exist'
-        }
-        res.status(500).send(data)
-        return
-    }
-    const strippedUser = await stripUser(user);
-    const data = {
-        status: 200,
-        message: 'User fetched successfully',
-        user: strippedUser
-    }
-    res.status(200).send(data)
-}
-
-module.exports.updateTheme = async (req, res) => {
-    const { theme } = await req.body
-    const user = await User.findOne({ email: req.email })
-    if (!user) {
-        const data = {
-            status: 500,
-            message: 'Internal Server Error'
-        }
-        res.status(500).send(data)
-        return
-    }
-    user.selectedTheme = theme
-    await user.save()
-    const strippedUser = await stripUser(user);
-    const data = {
-        status: 200,
-        message: 'Theme updated successfully',
-        user: strippedUser
-    }
-    res.status(200).send(data)
-}
-
-module.exports.updateProfile = async (req, res) => {
-    const { position, phoneNumber, website, bio } = await req.body
-    const user = await User.findOne({ email: req.email })
-    if (!user) {
-        const data = {
-            status: 500,
-            message: 'Internal Server Error'
-        }
-        res.status(500).send(data)
-        return
-    }
-    user.position = position
-    user.phoneNumber = phoneNumber
-    user.website = website
-    user.bio = bio
-    await user.save()
-    const strippedUser = await stripUser(user);
-    const data = {
-        status: 200,
-        message: 'Profile updated successfully',
-        user: strippedUser
-    }
-    res.status(200).send(data)
-}
-
-module.exports.updatePersonalInfo = async (req, res) => {
-    const { firstName, lastName, dob, timeZone } = await req.body
-    const user = await User.findOne({ email: req.email })
-    if (!user) {
-        const data = {
-            status: 500,
-            message: 'Internal Server Error'
-        }
-        res.status(500).send(data)
-        return
-    }
-    user.firstName = firstName
-    user.lastName = lastName
-    user.dob = await utility.convertStringToDate(dob)
-    user.timeZone = timeZone
-    await user.save()
-    const strippedUser = await stripUser(user);
-    const data = {
-        status: 200,
-        message: 'Personal Info updated successfully',
-        user: strippedUser
-    }
-    res.status(200).send(data)
-}
-
-module.exports.updateSingleColor = async (req, res) => {
-    const { property, color, theme } = await req.body
-    
-    const user = await User.findOne({ email: req.email })
-    if (!user) {
-        const data = {
-            status: 500,
-            message: 'Internal Server Error'
-        }
-        res.status(500).send(data)
-        return
-    }
-    if (theme === 'light') {
-        user.lightColorScheme[property] = color
-        user.markModified('lightColorScheme');
-    } else {
-        user.darkColorScheme[property] = color
-        user.markModified('darkColorScheme');
-    }
-    await user.save()
-    const strippedUser = await stripUser(user);
-    const data = {
-        status: 200,
-        message: 'Color updated successfully',
-        user: strippedUser
-    }
-    res.status(200).send(data)
-}
-
-module.exports.updateDateTimeValues = async (req, res) => {
-    const { weekStartOn, dateFormat, timeFormat } = await req.body
-
-    const user = await User.findOneAndUpdate({ email: req.email }, { weekStartOn: weekStartOn, dateFormat: dateFormat, timeFormat: timeFormat }, { new: true })
-    if (!user) {
-        const data = {
-            status: 500,
-            message: 'Internal Server Error'
-        }
-        res.status(500).send(data)
-        return
-    }
-    const strippedUser = await stripUser(user);
-    const data = {
-        status: 200,
-        message: 'Date and Time updated successfully',
-        user: strippedUser
-    }
-    res.status(200).send(data)
-}
-
 module.exports.changePassword = async (req, res) => {
     const {currentPassword, newPassword, confirmPassword} = await req.body
     if (!currentPassword || !newPassword || !confirmPassword) {
@@ -448,3 +322,57 @@ module.exports.changePassword = async (req, res) => {
     }
     res.status(200).send(data)
 }
+
+module.exports.updatePersonalInfo = async (req, res) => {
+    const { firstName, lastName, dob, timeZone } = await req.body
+    const user = await User.findOne({ email: req.email })
+    if (!user) {
+        const data = {
+            status: 500,
+            message: 'Internal Server Error'
+        }
+        res.status(500).send(data)
+        return
+    }
+    user.firstName = firstName
+    user.lastName = lastName
+    user.dob = await utility.convertStringToDate(dob)
+    user.timeZone = timeZone
+    await user.save()
+    const strippedUser = await stripUser(user);
+    const data = {
+        status: 200,
+        message: 'Personal Info updated successfully',
+        user: strippedUser,
+        workspace: await workspaceService.getWorkspaceById(user.selectedWorkspace)
+    }
+    res.status(200).send(data)
+}
+
+module.exports.updateProfile = async (req, res) => {
+    const { position, phoneNumber, website, bio } = await req.body
+    const user = await User.findOne({ email: req.email })
+    if (!user) {
+        const data = {
+            status: 500,
+            message: 'Internal Server Error'
+        }
+        res.status(500).send(data)
+        return
+    }
+    user.position = position
+    user.phoneNumber = phoneNumber
+    user.website = website
+    user.bio = bio
+    await user.save()
+    const strippedUser = await stripUser(user);
+    const data = {
+        status: 200,
+        message: 'Profile updated successfully',
+        user: strippedUser,
+        workspace: await workspaceService.getWorkspaceById(user.selectedWorkspace)
+    }
+    res.status(200).send(data)
+}
+
+

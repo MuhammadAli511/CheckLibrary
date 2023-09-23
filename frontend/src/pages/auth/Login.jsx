@@ -42,15 +42,36 @@ const Login = () => {
                 toast(<ErrorToast message="Can not reach Server" />);
             }
             if (response.status === 200) {
-                const user = response.user
-                dispatch({
-                    type: "AUTH",
-                    data: {
-                        token,
-                        user
-                    }
-                });
-                navigate("/dashboard");
+                const user = response.user;
+                const workspace = response.workspace;
+                const token = response.token;
+                if (response.user.accountStatus === "unverified") {
+                    navigate("/verifyEmail");
+                }
+                else if (response.user.accountStatus === "onboarding") {
+                    dispatch({
+                        type: "AUTH_SIGNUP",
+                        data: {
+                            token,
+                            user
+                        }
+                    });
+                    navigate("/workspaceOnboarding");
+                    
+                }
+                else if (response.user.accountStatus === "active") {  
+                    dispatch({
+                        type: "AUTH_LOGIN",
+                        data: {
+                            token,
+                            user,
+                            workspace
+                        }
+                    });
+                    navigate("/dashboard");
+                } else {
+                    toast(<ErrorToast message={response.message} />);
+                }
             }
             else {
                 toast(<ErrorToast message={response.message} />);
@@ -75,14 +96,26 @@ const Login = () => {
             if (response.status === 200) {
                 const user = response.user;
                 const token = response.token;
+                const workspace = response.workspace;
                 dispatch({
-                    type: "AUTH",
+                    type: "AUTH_LOGIN",
                     data: {
                         token,
-                        user
+                        user,
+                        workspace
                     }
                 });
-                navigate("/dashboard");
+                if (response.user.accountStatus === "unverified") {
+                    navigate("/verifyEmail");
+                }
+                else if (response.user.accountStatus === "onboarding") {
+                    navigate("/workspaceOnboarding");
+                }
+                else if (response.user.accountStatus === "active") {  
+                    navigate("/dashboard");
+                } else {
+                    toast(<ErrorToast message={response.message} />);
+                }
             }
             else {
                 toast(<ErrorToast message={response.message} />);

@@ -5,7 +5,6 @@ import DarkThemeIcon from '../assets/darkTheme.svg';
 import LightThemeIcon from '../assets/lightTheme.svg';
 import TickIcon from '../assets/tick.svg';
 import { updateTheme } from '../helper';
-import { setThemes as setThemesAction } from '../redux/actions';
 // Toast
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -15,14 +14,20 @@ import SuccessToast from "./SuccessToast";
 
 function Appearance() {
     const dispatch = useDispatch();
-    const user = useSelector(state => state.auth.authData?.user);
+    const workspace = useSelector(state => state.auth.authData?.workspace);
     const themeColors = useContext(ThemeContext);
-    const currentTheme = user?.selectedTheme || 'light';
+    const currentTheme = workspace?.selectedTheme || 'light';
     
     const handleThemeChange = async (selectedTheme) => {
+        console.log(workspace?.selectedTheme)
+        console.log(currentTheme)
         const response = await updateTheme(selectedTheme);
+        console.log(selectedTheme)
         if (response.status === 200) {
-            dispatch(setThemesAction(selectedTheme));
+            dispatch({
+                type: "SET_THEME",
+                payload: selectedTheme,
+            });                       
             toast(<SuccessToast message={response.message} />);
         }
         else {

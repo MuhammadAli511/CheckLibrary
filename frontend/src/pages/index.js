@@ -4,6 +4,7 @@ import Marketplace from './Marketplace';
 import NotFound from './NotFound';
 import Products from './Products';
 import Tasks from './Tasks';
+import WorkspaceOnboarding from './WorkspaceOnboarding';
 import CheckYourMail from './auth/CheckYourMail';
 import ForgotPassword from './auth/ForgotPassword';
 import Login from './auth/Login';
@@ -15,5 +16,5 @@ import Dashboard from './home/Dashboard';
 import Onboarding from './home/Onboarding';
 import Settings from './settings/Settings';
 
-export { AddProduct, CheckYourMail, Dashboard, ForgotPassword, ImportCsv, Login, Marketplace, NotFound, Onboarding, Products, ResetPassword, ResetPasswordSuccess, Settings, SignUp, Tasks, VerifyEmail };
+export { AddProduct, CheckYourMail, Dashboard, ForgotPassword, ImportCsv, Login, Marketplace, NotFound, Onboarding, Products, ResetPassword, ResetPasswordSuccess, Settings, SignUp, Tasks, VerifyEmail, WorkspaceOnboarding };
 

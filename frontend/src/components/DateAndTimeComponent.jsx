@@ -55,9 +55,10 @@ function DateAndTimeComponent() {
         if (response.status === 200) {
             toast(<SuccessToast message={response.message} />);
             const user = response.user;
+            const workspace = response.workspace;
             dispatch({
                 type: "UPDATE_PROFILE",
-                payload: user
+                payload: {user, workspace}
             });
         } else {
             toast(<ErrorToast message={response.message} />);

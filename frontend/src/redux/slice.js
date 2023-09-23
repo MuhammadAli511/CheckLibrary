@@ -1,23 +1,25 @@
 import { combineReducers, createSlice } from '@reduxjs/toolkit';
-import { AUTH, LOGOUT, SET_THEME, UPDATE_PROFILE } from "../constants/actiontypes";
-
-const initialState = {
-    authData: {
-        user: {
-            selectedTheme: 'light',
-        }
-    }
-};
+import { AUTH_LOGIN, AUTH_SIGNUP, LOGOUT, SET_THEME, UPDATE_PROFILE, UPDATE_WORKSPACE } from "../constants/actiontypes";
 
 const authReducer = (state = { authData: null }, action) => {
     switch (action.type) {
-        case AUTH:
-            localStorage.setItem("profile", JSON.stringify({ ...action?.data }));
+        case AUTH_SIGNUP:
+            localStorage.setItem("profile", action?.data?.token ?? "");
             return { 
                 ...state, 
                 authData: {
                     token: action?.data?.token,
                     user: action.data.user
+                }
+            };
+        case AUTH_LOGIN:
+            localStorage.setItem("profile", action?.data?.token ?? "");
+            return { 
+                ...state, 
+                authData: {
+                    token: action?.data?.token,
+                    user: action.data.user,
+                    workspace: action.data.workspace
                 }
             };
         case LOGOUT:
@@ -28,9 +30,9 @@ const authReducer = (state = { authData: null }, action) => {
                 ...state,
                 authData: {
                     ...state.authData,
-                    user: {
-                        ...state.authData.user,
-                        selectedTheme: action.payload,
+                    workspace: {
+                        ...state.authData.workspace,
+                        selectedTheme: action.payload
                     }
                 }
             };
@@ -39,7 +41,16 @@ const authReducer = (state = { authData: null }, action) => {
                 ...state,
                 authData: {
                     ...state.authData,
-                    user: action.payload,
+                    user: action.payload.user
+                }
+            };
+        case UPDATE_WORKSPACE:
+            console.log("workspace",action.payload.workspace);
+            return {
+                ...state,
+                authData: {
+                    ...state.authData,
+                    workspace: action.payload.workspace
                 }
             };
         default:

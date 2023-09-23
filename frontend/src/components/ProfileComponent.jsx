@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { ThemeContext } from "../ThemeProvider";
 import { updateProfile } from '../helper';
-import { setUserProfile } from '../redux/actions';
 // Toast
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -32,7 +31,12 @@ function ProfileComponent() {
         const response = await updateProfile( position, phoneNumber, website, bio );
         if (response.status === 200) {
             toast(<SuccessToast message={response.message} />);
-            dispatch(setUserProfile(response.user));
+            const user = response.user;
+            const workspace = response.workspace;
+            dispatch({
+                type: "UPDATE_PROFILE",
+                payload: {user, workspace}
+            });
         } else {
             toast(<ErrorToast message={response.message} />);
         }

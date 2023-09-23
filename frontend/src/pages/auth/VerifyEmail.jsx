@@ -1,9 +1,6 @@
-import jwt_decode from "jwt-decode";
 import { useState } from "react";
-import { useDispatch } from 'react-redux';
-import { Link, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { LogoNavbar } from "../../components";
-import { } from "../../helper";
 // Toast
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -13,22 +10,9 @@ import '../../toastCustomStyles.css';
 
 const VerifyEmail = () => {
 
-    const [formData, setFormData] = useState({
-        workEmail: "",
-        password: "",
-    });
     const [isLoading, setIsLoading] = useState(false);
-    const { workEmail, password } = formData;
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-
-
-    const onChange = (e) => {
-        setFormData((prevState) => ({
-            ...prevState,
-            [e.target.name]: e.target.value,
-        }))
-    }
+    const location = useLocation();
+    const email = location.state.email;
 
     return (
         <div className="bg-[#F7F7F7] min-h-screen">
@@ -44,42 +28,22 @@ const VerifyEmail = () => {
             <LogoNavbar />
             <div className="flex flex-col items-center justify-center px-2 sm:px-6 lg:px-0">
                 <div className="bg-white py-4 px-6 mt-4 rounded-lg w-full max-w-xl sm:max-w-md lg:max-w-md h-auto">
-                    <h1 className="text-2xl font-semibold text-[#1E1E1E] mb-4 mt-10 text-center">Verify your Email</h1>
-                    <form className="flex flex-col items-center justify-center">
-                        <input
-                            type="email"
-                            id="workEmail"
-                            name="workEmail"
-                            value={workEmail}
-                            onChange={onChange}
-                            className="input-placeholder border border-[#C5C5C5] p-2 rounded-lg w-full h-[38px] text-sm font-normal mb-4"
-                            placeholder="Email"
-                            required
-                        />
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            value={password}
-                            onChange={onChange}
-                            className="input-placeholder border border-[#C5C5C5] p-2 rounded-lg w-full h-[38px] text-sm font-normal mb-4"
-                            placeholder="Password"
-                            required
-                        />
-
-                        <div className="flex flex-row items-center justify-start w-full ml-2">
-                            <input
-                                type="checkbox"
-                                id="termsAndConditions"
-                                name="termsAndConditions"
-                                className="mb-4"
-                            />
-                            <label htmlFor="termsAndConditions" className="text-sm font-normal text-[#1E1E1E] mb-4 ml-2">Remember Me</label>
-                        </div>
-                        <button type="submit" className="bg-[#079263] text-white p-2 rounded-lg w-full h-[38px] text-sm font-normal mt-10 mb-10">
-                            {isLoading ? <div className="loader"></div> : "Login"}</button>
-                    </form>
                     
+
+                    <h1 className="text-2xl font-semibold text-[#1E1E1E] mb-2 mt-10 text-center">
+                        Almost there!
+                    </h1>
+
+                    <p className="text-md text-[#333] mb-6 text-center">
+                        We've sent a verification link to <span className="font-semibold">{email}</span>. Please check your inbox (and maybe the spam folder, just in case) and click on the link to verify your email.
+                    </p>
+
+                    <p className="text-sm text-[#1E1E1E] mb-6 text-center">
+                        Didn't receive the email? <button onClick={() => {/* Function to resend email */}} className="text-[#079263] underline">Resend Verification Link</button>
+                    </p>
+
+                    <button type="submit" className="bg-[#079263] text-white p-2 rounded-lg w-full h-[38px] text-sm font-normal mt-4 mb-10">
+                            {isLoading ? <div className="loader"></div> : "Go to Login"}</button>
                 </div>
             </div>
         </div>

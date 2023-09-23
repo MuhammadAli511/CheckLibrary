@@ -32,14 +32,14 @@ const Navbar = () => {
   }, [isDropdownVisible]);
 
 
-  const userDetails = useSelector(state => state.auth.authData?.user);
+  const workspace = useSelector(state => state.auth.authData?.workspace);
   const location = useLocation();
   let displayText;
 
   const getMenuLines = () => {
-    if (userDetails?.selectedTheme === "light") {
+    if (workspace?.selectedTheme === "light") {
       return menuLines;
-    } else if (userDetails?.selectedTheme === "dark") {
+    } else if (workspace?.selectedTheme === "dark") {
       return whiteMenuLines;
     } else {
       return menuLines;
@@ -47,9 +47,9 @@ const Navbar = () => {
   }
 
   const getGift = () => {
-    if (userDetails?.selectedTheme === "light") {
+    if (workspace?.selectedTheme === "light") {
       return gift;
-    } else if (userDetails?.selectedTheme === "dark") {
+    } else if (workspace?.selectedTheme === "dark") {
       return giftWhite;
     } else {
       return gift;
@@ -57,9 +57,9 @@ const Navbar = () => {
   }
 
   const getHelp = () => {
-    if (userDetails?.selectedTheme === "light") {
+    if (workspace?.selectedTheme === "light") {
       return help;
-    } else if (userDetails?.selectedTheme === "dark") {
+    } else if (workspace?.selectedTheme === "dark") {
       return helpWhite;
     } else {
       return help;
@@ -67,9 +67,9 @@ const Navbar = () => {
   }
 
   const getDocument = () => {
-    if (userDetails?.selectedTheme === "light") {
+    if (workspace?.selectedTheme === "light") {
       return document;
-    } else if (userDetails?.selectedTheme === "dark") {
+    } else if (workspace?.selectedTheme === "dark") {
       return documentWhite;
     } else {
       return document;
@@ -139,7 +139,7 @@ const Navbar = () => {
         </div>
         <div className='flex justify-center items-center pl-4' onClick={toggleDropdown} ref={dropdownRef}>
           <div className="text-md font-normal mr-4" style={{ color: themeColors.text }}>
-            {userDetails?.firstName} {userDetails?.lastName}
+            {workspace?.firstName} {workspace?.lastName}
           </div>
           <div className="w-10 h-10 flex items-center" dangerouslySetInnerHTML={{ __html: profile }}></div>
 

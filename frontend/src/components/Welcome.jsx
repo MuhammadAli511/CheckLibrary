@@ -6,7 +6,7 @@ import PlayCircleIcon from '../assets/play-circle.svg';
 
 function Welcome() {
     const navigate = useNavigate();
-    const userDetails = useSelector(state => state.auth.authData?.user);
+    const workspace = useSelector(state => state.auth.authData?.workspace);
     const handleButtonClick = () => {
         navigate('/onboarding');
     };
@@ -15,7 +15,7 @@ function Welcome() {
     return (
         <div className="flex items-center justify-between mt-10 mb-4" style={{ background: themeColors.background }}>
             <div>
-                <h2 className="text-2xl font-semibold mb-4 font-poppins" style={{ color: themeColors.text }}>Welcome back, {userDetails?.firstName} 👋</h2>
+                <h2 className="text-2xl font-semibold mb-4 font-poppins" style={{ color: themeColors.text }}>Welcome back, {workspace?.firstName} 👋</h2>
                 <p style={{ color: themeColors.text }}>Watch our demo video to learn more about Checklibrary</p>
             </div>
             <button onClick={handleButtonClick} className="flex items-center bg-primary-light text-white py-2 px-4 rounded-md">

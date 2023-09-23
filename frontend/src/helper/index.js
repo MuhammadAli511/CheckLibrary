@@ -1,7 +1,7 @@
 const API_URL = "http://localhost:3000/api";
 
 const getToken = () => {
-    return JSON.parse(localStorage.getItem('profile')).token;
+    return localStorage.getItem('profile');
 };
 
 const getHeaders = () => {
@@ -12,20 +12,20 @@ const getHeaders = () => {
     };
 };
 
-export const googleSignUp = async ( firstName, lastName, email, timeZone ) => {
+export const googleSignUp = async ( firstName, lastName, email, timeZone, accountStatus ) => {
     const response = await fetch(`${API_URL}/userRoute/googleSignUp`, {
         method: "POST",
         headers: getHeaders(),
-        body: JSON.stringify({ firstName, lastName, email, timeZone }),
+        body: JSON.stringify({ firstName, lastName, email, timeZone, accountStatus }),
     });
     return await response.json();
 };
 
-export const signup = async ( firstName, lastName, email, password, defaultTimeZoneCode ) => {
+export const signup = async ( firstName, lastName, email, password, defaultTimeZoneCode, accountStatus ) => {
     const response = await fetch(`${API_URL}/userRoute/signup`, {
         method: "POST",
         headers: getHeaders(),
-        body: JSON.stringify({ firstName, lastName, email, password, defaultTimeZoneCode }),
+        body: JSON.stringify({ firstName, lastName, email, password, defaultTimeZoneCode, accountStatus }),
     });
     return await response.json();
 }
@@ -57,17 +57,8 @@ export const ChangePasswordonReset = async ( new_password, confirm_password, tok
     return await response.json();
 }
 
-export const fetchUserDetails = async (email) => {
-    const response = await fetch(`${API_URL}/userRoute/fetchUserDetails`, {
-        method: "POST",
-        headers: getHeaders(),
-        body: JSON.stringify({ email }),
-    });
-    return await response.json();
-}
-
 export const updateTheme = async (theme) => {
-    const response = await fetch(`${API_URL}/userRoute/updateTheme`, {
+    const response = await fetch(`${API_URL}/workspaceRoute/updateTheme`, {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ theme }),
@@ -116,6 +107,15 @@ export const changePassword = async (currentPassword, newPassword, confirmPasswo
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ currentPassword, newPassword, confirmPassword }),
+    });
+    return await response.json();
+}
+
+export const workspaceOnboard = async (workspaceName) => {
+    const response = await fetch(`${API_URL}/workspaceRoute/workspaceOnboarding`, {
+        method: "POST",
+        headers: getHeaders(),
+        body: JSON.stringify({ workspaceName }),
     });
     return await response.json();
 }

@@ -1,10 +1,8 @@
 import { GoogleLogin } from '@react-oauth/google';
 import jwt_decode from "jwt-decode";
-import { DateTime } from 'luxon';
 import { useState } from "react";
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from "react-router-dom";
-import timezones from 'timezones-list';
 import { GoogleLogo } from "../../assets";
 import { LogoNavbar } from "../../components";
 import { googleSignUp, signup } from "../../helper";
@@ -41,20 +39,38 @@ const SignUp = () => {
         const defaultTimeZoneCode = Intl.DateTimeFormat().resolvedOptions().timeZone;
         try {
             const decodedToken = await jwt_decode(token);
-            const response = await googleSignUp(decodedToken.given_name, decodedToken.family_name, decodedToken.email, defaultTimeZoneCode);
+            const accountStatus = "onboarding";
+            const response = await googleSignUp(decodedToken.given_name, decodedToken.family_name, decodedToken.email, defaultTimeZoneCode, accountStatus);
             if (!response) {
                 toast(<ErrorToast message="Can not reach Server" />);
             }
             if (response.status === 200) {
                 const user = response.user;
-                dispatch({
-                    type: "AUTH",
-                    data: {
-                        token,
-                        user
-                    }
-                });
-                navigate("/dashboard");
+                const token = response.token;
+                const workspace = response.workspace;
+                if (response.user.accountStatus === "onboarding") {
+                    dispatch({
+                        type: "AUTH_SIGNUP",
+                        data: {
+                            token,
+                            user
+                        }
+                    });
+                    navigate("/workspaceOnboarding", {state: {name: decodedToken.family_name}});
+                }
+                else if (response.user.accountStatus === "active") {  
+                    dispatch({
+                        type: "AUTH_LOGIN",
+                        data: {
+                            token,
+                            user,
+                            workspace
+                        }
+                    });
+                    navigate("/dashboard");
+                } else {
+                    toast(<ErrorToast message={response.message} />);
+                }
             }
             else {
                 toast(<ErrorToast message={response.message} />);
@@ -77,12 +93,24 @@ const SignUp = () => {
         try {
             setIsLoading(true);
             const defaultTimeZoneCode = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            const response = await signup(firstName, lastName, workEmail, password, defaultTimeZoneCode);
+            const accountStatus = "unverified";
+            const response = await signup(firstName, lastName, workEmail, password, defaultTimeZoneCode, accountStatus);
             if (!response) {
                 toast(<ErrorToast message="Can not reach Server" />);
             }
             if (response.status === 200) {
-                navigate("/login");
+                const user = response.user;
+                const token = response.token;
+                dispatch({
+                    type: "AUTH",
+                    data: {
+                        token,
+                        user
+                    }
+                });
+                if (response.user.accountStatus === "unverified") {
+                    navigate("/verifyEmail");
+                }
             }
             else {
                 toast(<ErrorToast message={response.message} />);
