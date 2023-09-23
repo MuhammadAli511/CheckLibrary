@@ -85,7 +85,7 @@ export const updatePersonalInfo = async (firstName, lastName, dob, timeZone) => 
 }
 
 export const updateSingleColor = async (property, color, theme) => {
-    const response = await fetch(`${API_URL}/userRoute/updateSingleColor`, {
+    const response = await fetch(`${API_URL}/workspaceRoute/updateSingleColor`, {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ property, color, theme }),
@@ -94,7 +94,7 @@ export const updateSingleColor = async (property, color, theme) => {
 }
 
 export const updateDateTimeValues = async (weekStartOn, dateFormat, timeFormat) => {
-    const response = await fetch(`${API_URL}/userRoute/updateDateTimeValues`, {
+    const response = await fetch(`${API_URL}/workspaceRoute/updateDateTimeValues`, {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ weekStartOn, dateFormat, timeFormat }),

@@ -32,10 +32,9 @@ function ProfileComponent() {
         if (response.status === 200) {
             toast(<SuccessToast message={response.message} />);
             const user = response.user;
-            const workspace = response.workspace;
             dispatch({
                 type: "UPDATE_PROFILE",
-                payload: {user, workspace}
+                payload: user
             });
         } else {
             toast(<ErrorToast message={response.message} />);

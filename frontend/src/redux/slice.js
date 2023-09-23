@@ -45,12 +45,11 @@ const authReducer = (state = { authData: null }, action) => {
                 }
             };
         case UPDATE_WORKSPACE:
-            console.log("workspace",action.payload.workspace);
             return {
                 ...state,
                 authData: {
                     ...state.authData,
-                    workspace: action.payload.workspace
+                    workspace: action.payload
                 }
             };
         default:

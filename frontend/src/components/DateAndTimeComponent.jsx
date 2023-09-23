@@ -54,11 +54,10 @@ function DateAndTimeComponent() {
         const response = await updateDateTimeValues(weekStartOnSelected, dateFormatSelected, timeFormatSelected);
         if (response.status === 200) {
             toast(<SuccessToast message={response.message} />);
-            const user = response.user;
             const workspace = response.workspace;
             dispatch({
-                type: "UPDATE_PROFILE",
-                payload: {user, workspace}
+                type: "UPDATE_WORKSPACE",
+                payload: workspace
             });
         } else {
             toast(<ErrorToast message={response.message} />);
