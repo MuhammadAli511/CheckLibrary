@@ -11,21 +11,21 @@ import SuccessToast from "./SuccessToast";
 
 function DateAndTimeComponent() {
     const dispatch = useDispatch();
-    const userDetails = useSelector(state => state.auth.authData?.user);
+    const workspace = useSelector(state => state.auth.authData?.workspace);
 
     // Time Zone
     const [timeZone, setTimeZone] = useState(Intl.DateTimeFormat().resolvedOptions().timeZone);
     // Date Format
-    const [dateFormat, setDateFormat] = useState(userDetails.dateFormat);
+    const [dateFormat, setDateFormat] = useState(workspace.dateFormat);
     const dateFormatTypes = ["YYYY-MM-DD", "DD-MM-YYYY", "MM-DD-YYYY", "DD/MM/YYYY"];
     const rearrangedDateFormats = [dateFormat, ...dateFormatTypes.filter(format => format !== dateFormat)];
     // Time Format
-    const [timeFormat, setTimeFormat] = useState(userDetails.timeFormat);
+    const [timeFormat, setTimeFormat] = useState(workspace.timeFormat);
     const timeFormatTypes = ["12 Hours", "24 Hours"];
     const rearrangedTimeFormats = [timeFormat, ...timeFormatTypes.filter(format => format !== timeFormat)];
 
     // Week Start On
-    const [weekStartOn, setWeekStartOn] = useState(userDetails.weekStartOn);
+    const [weekStartOn, setWeekStartOn] = useState(workspace.weekStartOn);
     const weekStartOnDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
     const rearrangedDays = [weekStartOn, ...weekStartOnDays.filter(day => day !== weekStartOn)];
 
