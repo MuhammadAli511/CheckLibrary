@@ -13,10 +13,11 @@ const VerifyEmail = () => {
     const [isLoading, setIsLoading] = useState(false);
     const location = useLocation();
     const email = location.state.email;
+    const navigate = useNavigate();
 
     return (
         <div className="bg-[#F7F7F7] min-h-screen">
-            <ToastContainer 
+            <ToastContainer
                 position="top-right"
                 autoClose={2000}
                 hideProgressBar
@@ -28,7 +29,7 @@ const VerifyEmail = () => {
             <LogoNavbar />
             <div className="flex flex-col items-center justify-center px-2 sm:px-6 lg:px-0">
                 <div className="bg-white py-4 px-6 mt-4 rounded-lg w-full max-w-xl sm:max-w-md lg:max-w-md h-auto">
-                    
+
 
                     <h1 className="text-2xl font-semibold text-[#1E1E1E] mb-2 mt-10 text-center">
                         Almost there!
@@ -38,12 +39,10 @@ const VerifyEmail = () => {
                         We've sent a verification link to <span className="font-semibold">{email}</span>. Please check your inbox (and maybe the spam folder, just in case) and click on the link to verify your email.
                     </p>
 
-                    <p className="text-sm text-[#1E1E1E] mb-6 text-center">
-                        Didn't receive the email? <button onClick={() => {/* Function to resend email */}} className="text-[#079263] underline">Resend Verification Link</button>
-                    </p>
+                    <button onClick={() => navigate("/login")} type="submit" className="bg-[#079263] text-white p-2 rounded-lg w-full h-[38px] text-sm font-normal mt-4 mb-10">
+                        {isLoading ? <div className="loader"></div> : "Go to Login"}
+                    </button>
 
-                    <button type="submit" className="bg-[#079263] text-white p-2 rounded-lg w-full h-[38px] text-sm font-normal mt-4 mb-10">
-                            {isLoading ? <div className="loader"></div> : "Go to Login"}</button>
                 </div>
             </div>
         </div>

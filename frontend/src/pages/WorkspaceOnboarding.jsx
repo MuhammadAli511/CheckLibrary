@@ -11,12 +11,12 @@ import '../toastCustomStyles.css';
 
 const WorkspaceOnboarding = () => {
     const [formData, setFormData] = useState({
-        wrokspaceName: ""
+        workspaceName: ""
     });
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
-    const { wrokspaceName } = formData;
+    const { workspaceName } = formData;
 
     const onChange = (e) => {
         setFormData((prevState) => ({
@@ -25,8 +25,7 @@ const WorkspaceOnboarding = () => {
         }))
     }
 
-    const location = useLocation();
-    const userName = location.state.name;
+    
 
     const dispatch = useDispatch();
 
@@ -34,7 +33,7 @@ const WorkspaceOnboarding = () => {
         e.preventDefault();
         try {
             setIsLoading(true);
-            const response = await workspaceOnboard(wrokspaceName);
+            const response = await workspaceOnboard(workspaceName);
             if (!response) {
                 toast(<ErrorToast message="Can not reach Server" />);
             }
@@ -74,7 +73,7 @@ const WorkspaceOnboarding = () => {
             <div className="flex flex-col items-center justify-center">
                 <div className="bg-white px-4 mt-4 rounded-lg w-full py-10 max-w-xl sm:max-w-md lg:max-w-md h-auto">
                     <h1 className="text-2xl font-semibold text-[#1E1E1E] mb-2 text-center">
-                        Welcome, {userName}!
+                        Welcome!
                     </h1>
                     <p className="text-sm text-[#333] mb-6 text-center">
                         Workspaces are dedicated environments where teams can collaborate, manage projects, and get things done. Let's get you set up with your very own workspace!
@@ -83,9 +82,9 @@ const WorkspaceOnboarding = () => {
                     <form onSubmit={handleSubmit} className="flex flex-col items-center justify-center">
                         <input
                             type="text"
-                            id="wrokspaceName"
-                            name="wrokspaceName"
-                            value={wrokspaceName}
+                            id="workspaceName"
+                            name="workspaceName"
+                            value={workspaceName}
                             onChange={onChange}
                             className="input-placeholder border border-[#C5C5C5] p-2 rounded-lg w-full h-[38px] text-sm font-normal mb-4"
                             placeholder="Workspace Name"

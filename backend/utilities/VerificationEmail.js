@@ -54,7 +54,7 @@ module.exports = (url, lastName) => `
             <tr>
               <td>
                 <a
-                  href="https://www.google.com"
+                  href="${url}"
                   target="_blank"
                   style="
                     background-color: #5f51e8;

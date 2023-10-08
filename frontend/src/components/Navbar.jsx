@@ -89,6 +89,9 @@ const Navbar = () => {
     case '/import':
       displayText = "Import";
       break;
+    case '/newProject':
+      displayText = "Create New Project";
+      break;
     default:
       displayText = "CheckLibrary";
   }

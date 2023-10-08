@@ -4,6 +4,7 @@ const User = require('../models/users')
 const Token = require('../models/tokens')
 const utility = require('../utilities')
 const workspaceService = require('../services/workspaceService')
+const crypto = require('crypto');
 
 async function generateToken(email, objectId) {
     const token = jwt.sign(
@@ -114,15 +115,16 @@ module.exports.signup = async (req, res) => {
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(password, salt)
     const user = await User.create({ firstName, lastName, email, password: hashedPassword, defaultTimeZoneCode, accountStatus })
-    const emailToken = await new Token({ userId: user._id, token: await generateToken(email, user._id) }).save()
-    const url = `${process.env.BASE_URL}/users/${user._id}/verify/${emailToken.token}`
+    const randomToken = crypto.randomBytes(32).toString('hex');
+    const emailToken = await new Token({ userId: user._id, token: randomToken }).save()
+    const url = `${process.env.FRONTEND_URL}/users/${user._id}/verify/${emailToken.token}`
     await utility.sendVerificationEmail(user, url)
     const token = await generateToken(email, user._id)
     if (user) {
         const data = {
             status: 200,
             message: 'Sign up successful',
-            user: stripUser(user),
+            user: await stripUser(user),
             token
         }
         res.status(200).send(data)
@@ -170,6 +172,16 @@ module.exports.login = async (req, res) => {
         const data = {
             status: 500,
             message: 'Invalid password'
+        }
+        res.status(500).send(data)
+        return
+    }
+
+    if (user.accountStatus === 'unverified') {
+        const data = {
+            status: 500,
+            user: await stripUser(user),
+            message: 'Please verify your email address'
         }
         res.status(500).send(data)
         return
@@ -264,7 +276,7 @@ module.exports.ChangePasswordonReset = async (req, res) => {
     const data = {
         status: 200,
         message: 'Password Updated successfully!',
-        user: stripUser(userUpdate)
+        user: await stripUser(userUpdate)
     }
     res.status(200).send(data)
 
@@ -376,3 +388,25 @@ module.exports.updateProfile = async (req, res) => {
 }
 
 
+module.exports.verifyUserEmail = async (req, res) => {
+    const {userId, emailToken} = await req.body
+
+    const checkToken = await Token.findOne({ userId, token: emailToken })
+    if (!checkToken) {
+        const data = {
+            status: 500,
+            message: 'Invalid Token'
+        }
+        res.status(500).send(data)
+    }
+    else {
+        const user = await User.findOne({ _id: userId })
+        user.accountStatus = 'onboarding'
+        await user.save()
+        const data = {
+            status: 200,
+            message: 'Email verified successfully'
+        }
+        res.status(200).send(data)
+    }
+}

@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from "react-router-dom";
 import { GoogleLogo } from "../../assets";
 import { LogoNavbar } from "../../components";
-import { googleSignUp, login, signup } from "../../helper";
+import { googleSignUp, login } from "../../helper";
 // Toast
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -59,7 +59,7 @@ const Login = () => {
                     navigate("/workspaceOnboarding");
                     
                 }
-                else if (response.user.accountStatus === "active") {  
+                else if (response.user.accountStatus === "verified") {  
                     dispatch({
                         type: "AUTH_LOGIN",
                         data: {
@@ -93,8 +93,8 @@ const Login = () => {
             if (!response) {
                 toast(<ErrorToast message="Can not reach Server" />);
             }
+            const user = response.user;
             if (response.status === 200) {
-                const user = response.user;
                 const token = response.token;
                 const workspace = response.workspace;
                 dispatch({
@@ -105,13 +105,10 @@ const Login = () => {
                         workspace
                     }
                 });
-                if (response.user.accountStatus === "unverified") {
-                    navigate("/verifyEmail");
-                }
-                else if (response.user.accountStatus === "onboarding") {
+                if (response.user.accountStatus === "onboarding") {
                     navigate("/workspaceOnboarding");
                 }
-                else if (response.user.accountStatus === "active") {  
+                else if (response.user.accountStatus === "verified") {  
                     navigate("/dashboard");
                 } else {
                     toast(<ErrorToast message={response.message} />);
@@ -119,6 +116,10 @@ const Login = () => {
             }
             else {
                 toast(<ErrorToast message={response.message} />);
+                console.log(response.user.accountStatus)
+                if (response.user.accountStatus === "unverified") {
+                    navigate("/verifyEmail", {state: {email: workEmail}});
+                }
             }
         } finally {
             setIsLoading(false);
@@ -172,7 +173,7 @@ const Login = () => {
                             />
                             <label htmlFor="termsAndConditions" className="text-sm font-normal text-[#1E1E1E] mb-4 ml-2">Remember Me</label>
                         </div>
-                        <button type="submit" className="bg-[#079263] text-white p-2 rounded-lg w-full h-[38px] text-sm font-normal mt-10">
+                        <button type="submit" className="load bg-[#079263] text-white p-2 rounded-lg w-full h-[38px] text-sm font-normal mt-10">
                             {isLoading ? <div className="loader"></div> : "Login"}</button>
                     </form>
                     <div className="flex flex-row items-center justify-center mt-4">

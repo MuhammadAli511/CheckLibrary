@@ -1,7 +1,6 @@
-var mongoose = require('mongoose');
-var dotenv = require('dotenv');
-dotenv.config();
-var dbURI = 'mongodb+srv://ali:PhnkC7NSZl7kLTkr@cluster0.70l1rir.mongodb.net/?retryWrites=true&w=majority';
+let mongoose = require('mongoose');
+require('dotenv').config();
+let dbURI = process.env.MONGODB_URI;
 
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true });
 

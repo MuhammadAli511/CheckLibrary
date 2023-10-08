@@ -119,3 +119,12 @@ export const workspaceOnboard = async (workspaceName) => {
     });
     return await response.json();
 }
+
+export const verifyUserEmail = async (userId, emailToken) => {
+    const response = await fetch(`${API_URL}/userRoute/verifyUserEmail`, {
+        method: "POST",
+        headers: getHeaders(),
+        body: JSON.stringify({ userId, emailToken }),
+    });
+    return await response.json();
+}

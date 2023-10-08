@@ -1,0 +1,6 @@
+.dateInput::before {
+    content: '' !important;
+}
+.dateInput:required:valid::before {
+    content: '' !important;
+}

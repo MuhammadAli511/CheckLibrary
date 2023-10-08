@@ -21,6 +21,8 @@ const SignUp = () => {
         password: "",
         confirmPassword: "",
     });
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -58,7 +60,7 @@ const SignUp = () => {
                     });
                     navigate("/workspaceOnboarding", {state: {name: decodedToken.family_name}});
                 }
-                else if (response.user.accountStatus === "active") {  
+                else if (response.user.accountStatus === "verified") {  
                     dispatch({
                         type: "AUTH_LOGIN",
                         data: {
@@ -108,9 +110,7 @@ const SignUp = () => {
                         user
                     }
                 });
-                if (response.user.accountStatus === "unverified") {
-                    navigate("/verifyEmail");
-                }
+                navigate("/verifyEmail", {state: {email: workEmail}});
             }
             else {
                 toast(<ErrorToast message={response.message} />);
@@ -167,18 +167,27 @@ const SignUp = () => {
                             placeholder="Work Email"
                             required
                         />
+                        <div className="relative w-full">
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                id="password"
+                                name="password"
+                                value={password}
+                                onChange={onChange}
+                                className="input-placeholder border border-[#C5C5C5] p-2 rounded-lg w-full h-[38px] text-sm font-normal mb-4"
+                                placeholder="Password"
+                                required
+                            />
+                            <span 
+                                className="absolute inset-y-0 bottom-4 right-0 pr-3 flex items-center cursor-pointer"
+                                onClick={() => setShowPassword(prevState => !prevState)}
+                            >
+                                {showPassword ? '🙈' : '👁️'}
+                            </span>
+                        </div>
+                        <div className="relative w-full">
                         <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            value={password}
-                            onChange={onChange}
-                            className="input-placeholder border border-[#C5C5C5] p-2 rounded-lg w-full h-[38px] text-sm font-normal mb-4"
-                            placeholder="Password"
-                            required
-                        />
-                        <input
-                            type="password"
+                            type={showConfirmPassword ? "text" : "password"}
                             id="confirmPassword"
                             name="confirmPassword"
                             value={confirmPassword}
@@ -187,6 +196,14 @@ const SignUp = () => {
                             placeholder="Confirm Password"
                             required
                         />
+                            <span 
+                                className="absolute inset-y-0 bottom-4 right-0 pr-3 flex items-center cursor-pointer"
+                                onClick={() => setShowConfirmPassword(prevState => !prevState)}
+                            >
+                                {showConfirmPassword ? '🙈' : '👁️'}
+                            </span>
+                        </div>
+                        
                         <div className="flex flex-row items-center justify-start w-full ml-2">
                             <input
                                 type="radio"
@@ -197,7 +214,7 @@ const SignUp = () => {
                             />
                             <label htmlFor="termsAndConditions" className="text-sm font-normal text-[#1E1E1E] mb-4 ml-2">I accept <a href="#" className="text-[#6259CE]">Terms and Conditions</a></label>
                         </div>
-                        <button type="submit" className="bg-[#6259CE] text-white p-2 rounded-lg w-full h-[38px] text-sm font-normal mt-10">
+                        <button type="submit" className="load bg-[#6259CE] text-white p-2 rounded-lg w-full h-[38px] text-sm font-normal mt-10">
                             {isLoading ? <div className="loader"></div> : "Create Account"}</button>
                     </form>
                     <div className="flex flex-row items-center justify-center mt-4">

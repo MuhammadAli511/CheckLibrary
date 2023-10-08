@@ -33,6 +33,9 @@ router.post('/userRoute/updatePersonalInfo', requireAuth, userController.updateP
 // POST api/userRoute/changePassword
 router.post('/userRoute/changePassword', requireAuth, userController.changePassword)
 
+// POST api/userRoute/verifyUserEmail
+router.post('/userRoute/verifyUserEmail', userController.verifyUserEmail)
+
 // POST api/workspaceRoute/workspaceOnboarding
 router.post('/workspaceRoute/workspaceOnboarding', requireAuth, workspaceController.workspaceOnboarding)
 

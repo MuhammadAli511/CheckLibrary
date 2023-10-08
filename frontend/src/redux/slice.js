@@ -77,13 +77,25 @@ const tasksTab = createSlice({
     }
 });
 
+const projectsTab = createSlice({
+    name: 'projectsTab',
+    initialState: 'List View',
+    reducers: {
+        setProjectsTab: (state, action) => {
+            return action.payload;
+        }
+    }
+});
+
 export const auth = (state) => state.auth;
 export const { setSettingTab } = settingTab.actions;
 export const { setTasksTab } = tasksTab.actions;
+export const { setProjectsTab } = projectsTab.actions;
 
 export const rootReducer = combineReducers({
     auth: authReducer,
     settingTab: settingTab.reducer,
     tasksTab: tasksTab.reducer,
+    projectsTab: projectsTab.reducer
 });
 

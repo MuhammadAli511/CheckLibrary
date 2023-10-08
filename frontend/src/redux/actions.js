@@ -1,5 +1,5 @@
 import { SET_THEME } from "../constants/actiontypes";
-import { setSettingTab, setTasksTab } from "./slice";
+import { setProjectsTab, setSettingTab, setTasksTab } from "./slice";
 
 export const setSettingTabAction = (tab) => {
     return (dispatch) => {
@@ -10,5 +10,11 @@ export const setSettingTabAction = (tab) => {
 export const setTasksTabAction = (tab) => {
     return (dispatch) => {
         dispatch(setTasksTab(tab));
+    }
+}
+
+export const setProjectsTabAction = (tab) => {
+    return (dispatch) => {
+        dispatch(setProjectsTab(tab));
     }
 }

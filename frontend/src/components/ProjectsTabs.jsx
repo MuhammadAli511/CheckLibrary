@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useDispatch } from "react-redux";
-import { setTasksTabAction } from "../redux/actions";
+import { useNavigate } from 'react-router-dom';
+import { setProjectsTabAction } from "../redux/actions";
 
 // Import the SVG assets
 import ArrowDown from '../assets/ArrowDown.svg';
@@ -13,13 +14,11 @@ import KanbanIcon from '../assets/kanban.svg';
 
 import ExportIcon from '../assets/Export.svg';
 import ImportIcon from '../assets/Import.svg';
-import MilestoneIcon from '../assets/Milestone.svg';
 
 const DROPDOWN_OPTIONS = [
-    { label: "Task", icon: ToDoIcon },
-    { label: "Milestone", icon: MilestoneIcon },
-    { label: "Import", icon: ImportIcon },
-    { label: "Export", icon: ExportIcon }
+    { label: "New Project", icon: ToDoIcon, path: "/newProject" },
+    { label: "Import", icon: ImportIcon, path: "/import" },
+    { label: "Export", icon: ExportIcon, path: "/export" }
 ];
 
 
@@ -27,18 +26,19 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-export default function TasksTabs() {
+export default function ProjectsTabs() {
     const dispatch = useDispatch();
 
     const [showDropdown, setShowDropdown] = useState(false);
-    const [selectedOption, setSelectedOption] = useState("Task");
+    const [selectedOption, setSelectedOption] = useState("Project");
+    const navigate = useNavigate();
 
 
     const [tabs, setTabs] = useState([
-        { name: 'To-Do List', current: true, icon: ToDoIcon },
-        { name: 'List View', current: false, icon: ListViewIcon },
-        { name: 'Kanban Board', current: false, icon: KanbanIcon },
+        { name: 'List View', current: true, icon: ToDoIcon },
+        { name: 'Board View', current: false, icon: KanbanIcon },
         { name: 'Templates', current: false, icon: TemplatesIcon },
+        { name: 'Archived', current: false, icon: KanbanIcon },
     ]);
 
     const handleTabClick = (tabName) => {
@@ -48,7 +48,7 @@ export default function TasksTabs() {
         }));
 
         setTabs(updatedTabs);
-        dispatch(setTasksTabAction(tabName));
+        dispatch(setProjectsTabAction(tabName));
     };
 
     return (
@@ -126,11 +126,11 @@ export default function TasksTabs() {
                     {showDropdown && (
                         <div className="origin-top-right absolute right-0 mt-2 w-36 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 bg-white">
                             <div className="py-1">
-                                {DROPDOWN_OPTIONS.map(({ label, icon }) => (
+                                {DROPDOWN_OPTIONS.map(({ label, icon, path }) => (
                                     <button
                                         key={label}
                                         onClick={() => {
-                                            setSelectedOption(label);
+                                            navigate(path);
                                             setShowDropdown(false);
                                         }}
                                         className="block px-4 py-2 text-sm text-black w-full text-left hover:bg-gray-200 flex items-center space-x-2"
