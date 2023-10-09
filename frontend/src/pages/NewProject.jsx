@@ -5,7 +5,7 @@ import ProjectDates from "../components/ProjectDates";
 import ProjectDetails from "../components/ProjectDetails";
 import Sidebar from "../components/Sidebar";
 
-const AddProduct = () => {
+const NewProject = () => {
     const themeColors = useContext(ThemeContext);
 
     return (
@@ -28,4 +28,4 @@ const AddProduct = () => {
     );
 };
 
-export default AddProduct;
+export default NewProject;

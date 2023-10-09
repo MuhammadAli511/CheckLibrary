@@ -1,5 +1,5 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import { AddProduct, CheckYourMail, Dashboard, ForgotPassword, ImportCsv, Login, Marketplace, NewProject, NotFound, Onboarding, Products, Projects, ResetPassword, ResetPasswordSuccess, Settings, SignUp, Tasks, VerifyEmail, VerifyEmailClicked, WorkspaceOnboarding } from "./pages";
+import { AddProduct, CheckYourMail, Dashboard, ForgotPassword, ImportCsv, Login, Marketplace, NewProject, NewWorkspace, NotFound, Onboarding, Products, Projects, ResetPassword, ResetPasswordSuccess, Settings, SignUp, Tasks, VerifyEmail, VerifyEmailClicked, WorkspaceOnboarding } from "./pages";
 function App() {
   
   return (
@@ -24,6 +24,7 @@ function App() {
         <Route path="/users/:userId/verify/:emailToken" element={<VerifyEmailClicked />} />
         <Route path="/workspaceOnboarding" element={<WorkspaceOnboarding />} />
         <Route path="/newProject" element={<NewProject />} />
+        <Route path="/newWorkspace" element={<NewWorkspace />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

@@ -45,6 +45,7 @@ const Login = () => {
                 const user = response.user;
                 const workspace = response.workspace;
                 const token = response.token;
+                const workspaceNames = response.workspaceNames;
                 if (response.user.accountStatus === "unverified") {
                     navigate("/verifyEmail");
                 }
@@ -65,7 +66,8 @@ const Login = () => {
                         data: {
                             token,
                             user,
-                            workspace
+                            workspace,
+                            workspaceNames
                         }
                     });
                     navigate("/dashboard");
@@ -97,12 +99,14 @@ const Login = () => {
             if (response.status === 200) {
                 const token = response.token;
                 const workspace = response.workspace;
+                const workspaceNames = response.workspaceNames;
                 dispatch({
                     type: "AUTH_LOGIN",
                     data: {
                         token,
                         user,
-                        workspace
+                        workspace,
+                        workspaceNames
                     }
                 });
                 if (response.user.accountStatus === "onboarding") {

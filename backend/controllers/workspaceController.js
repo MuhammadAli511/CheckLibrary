@@ -37,6 +37,7 @@ module.exports.workspaceOnboarding = async (req, res) => {
         });
 
         await userService.setSelectedWorkspace(userId, newWorkspace._id);
+        await userService.updateAccountStatus(userId, "verified");
 
         const data = {
             status: 200,
@@ -95,4 +96,85 @@ module.exports.updateDateTimeValues = async (req, res) => {
         workspace: updatedWorkspace
     }
     res.status(200).send(data)
+}
+
+module.exports.workspaceCreation = async (req, res) => {
+    try {
+        const { workspaceName } = req.body;
+        const userId = req.user_id;
+
+        if (!workspaceName || !userId) {
+            return res.status(400).json({ error: "Required fields are missing" });
+        }
+
+        const workspace = await Workspace.findOne({ name: workspaceName, ownerId: userId });
+        if (workspace) {
+            const data = {
+                status: 400,
+                message: 'Error: Workspace already exists'
+            }
+            return res.status(400).json(data);
+        }
+
+        const newWorkspace = await Workspace.create({
+            name: workspaceName,
+            ownerId: userId
+        });
+
+
+        const ownerRoleId = await roleService.getRoleId("Owner");
+
+        await WorkspaceMembers.create({
+            workspaceId: newWorkspace._id,
+            userId: userId,
+            roleId: ownerRoleId._id
+        });
+
+        // await userService.setSelectedWorkspace(userId, newWorkspace._id);
+        // await userService.updateAccountStatus(userId, "verified");
+
+        const data = {
+            status: 200,
+            message: 'Workspace created successfully',
+            workspace: newWorkspace,
+        }
+        return res.status(200).json(data);
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: "Server error" });
+    }
+}
+
+module.exports.setSelectedWorkspaceName = async (req, res) => {
+    try {
+        const { workspaceName } = req.body;
+        const userId = req.user_id;
+
+        if (!workspaceName || !userId) {
+            return res.status(400).json({ error: "Required fields are missing" });
+        }
+
+        const workspace = await Workspace.findOne({ name: workspaceName, ownerId: userId });
+        if (!workspace) {
+            const data = {
+                status: 400,
+                message: 'Error: Workspace does not exist'
+            }
+            return res.status(400).json(data);
+        }
+
+        await userService.setSelectedWorkspace(userId, workspace._id);
+
+        const data = {
+            status: 200,
+            message: 'Workspace selected successfully',
+            workspace: workspace,
+        }
+        return res.status(200).json(data);
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: "Server error" });
+    }
 }

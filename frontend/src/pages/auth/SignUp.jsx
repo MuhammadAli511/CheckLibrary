@@ -50,6 +50,7 @@ const SignUp = () => {
                 const user = response.user;
                 const token = response.token;
                 const workspace = response.workspace;
+                const workspaceNames = response.workspaceNames;
                 if (response.user.accountStatus === "onboarding") {
                     dispatch({
                         type: "AUTH_SIGNUP",
@@ -66,7 +67,8 @@ const SignUp = () => {
                         data: {
                             token,
                             user,
-                            workspace
+                            workspace,
+                            workspaceNames
                         }
                     });
                     navigate("/dashboard");

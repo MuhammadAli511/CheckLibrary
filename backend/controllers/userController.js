@@ -51,13 +51,15 @@ module.exports.googleSignup = async (req, res) => {
         const updateUser = await User.findOneAndUpdate({ email }, { firstName, lastName, timeZone })
         const strippedUser = await stripUser(updateUser);
         const token = await generateToken(email, updateUser._id)
+        const workspaceNames = await workspaceService.getWorkspaceNames(updateUser._id)
         if (updateUser) {
             const data = {
                 status: 200,
                 message: 'Sign in successful',
                 user: strippedUser,
                 token,
-                workspace: await workspaceService.getWorkspaceById(updateUser.selectedWorkspace)
+                workspace: await workspaceService.getWorkspaceById(updateUser.selectedWorkspace),
+                workspaceNames
             }
             res.status(200).send(data)
             return
@@ -188,6 +190,7 @@ module.exports.login = async (req, res) => {
     }
 
     const token = await generateToken(email, user._id)
+    const workspaceNames = await workspaceService.getWorkspaceNames(user._id)
 
     const strippedUser = await stripUser(user);
     const data = {
@@ -195,7 +198,8 @@ module.exports.login = async (req, res) => {
         message: 'Login successful',
         user: strippedUser,
         token,
-        workspace: await workspaceService.getWorkspaceById(user.selectedWorkspace)
+        workspace: await workspaceService.getWorkspaceById(user.selectedWorkspace),
+        workspaceNames
     }
     res.status(200).send(data)
 

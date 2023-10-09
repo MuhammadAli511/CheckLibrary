@@ -19,7 +19,8 @@ const authReducer = (state = { authData: null }, action) => {
                 authData: {
                     token: action?.data?.token,
                     user: action.data.user,
-                    workspace: action.data.workspace
+                    workspace: action.data.workspace,
+                    workspaceNames: action.data.workspaceNames
                 }
             };
         case LOGOUT:

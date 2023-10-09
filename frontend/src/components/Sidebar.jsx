@@ -1,15 +1,20 @@
-import { useContext } from "react";
-import { useSelector } from "react-redux";
+import { useContext, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from 'react-router-dom';
 import { ThemeContext } from "../ThemeProvider";
 import { CheckLibraryLogo, commCenter, commLeft, commRight } from "../assets";
 import { docs, docsSelected, home, homeSelected, marketplace, marketplaceSelected, projects, projectsSelected, settings, settingsSelected, tasks, tasksSelected } from "../constants/svgs";
+import { setSelectedWorkspaceName } from '../helper';
 
 const Sidebar = () => {
   const location = useLocation();
+  const dispatch = useDispatch();
 
   const themeColors = useContext(ThemeContext);
-  const workspace = useSelector(state => state.auth.authData?.workspace);
+  const [workspace, setWorkspace] = useState(useSelector(state => state.auth.authData?.workspace));
+  const workspaceNames = useSelector(state => state.auth.authData?.workspaceNames);
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [selectedWorkspace, setSelectedWorkspace] = useState(workspace?.name);
 
   const getSidebarTextColor = () => {
     if (workspace?.selectedTheme === "light") {
@@ -21,7 +26,7 @@ const Sidebar = () => {
     }
   };
 
-  
+
 
   const menuItems = [
     { name: "Home", path: "/dashboard", soon: false, iconBlack: home, iconWhite: homeSelected },
@@ -44,16 +49,52 @@ const Sidebar = () => {
   return (
     <div className="h-max fixed left-5 top-5 rounded-[10px] border py-5 w-[265px]" style={{ backgroundColor: themeColors.background, borderColor: themeColors.cornerRadius, boxShadow: "0px 10px 21px 0px rgba(152, 152, 152, 0.12)" }}>
       <div className="flex items-center justify-start space-x-4 ml-3 mb-8">
-        <img className="h-8 w-auto sm:h-10 sm:w-auto md:h-12 md:w-auto" src={CheckLibraryLogo} alt="Logo" />
+        <div onClick={() => setIsDropdownVisible(!isDropdownVisible)}>
+          <img className="h-8 w-auto sm:h-10 sm:w-auto md:h-12 md:w-auto" src={CheckLibraryLogo} alt="Logo" />
+        </div>
+        {isDropdownVisible && (
+          <div className="absolute top-16 mt-2 w-64 rounded-md shadow-lg bg-[#F7F7F7]">
+            <ul>
+              {workspaceNames.map((workspaceName, idx) => (
+                <li
+                  key={idx}
+                  className={`p-2 cursor-pointer ${workspaceName.name === selectedWorkspace ? "bg-[#079263] text-white" : "text-[#079263]"}`}
+                  onClick={async () => {
+                    const response = await setSelectedWorkspaceName(workspaceName.name);
+                    if (response.status === 200) {
+                      setWorkspace(response.workspace);
+                      setSelectedWorkspace(response.workspace.name);
+                      const workspace = response.workspace;
+                      dispatch({
+                          type: "UPDATE_WORKSPACE",
+                          payload: workspace
+                      });
+                      setIsDropdownVisible(false);
+                    } else {
+                      toast(<ErrorToast message={response.message} />);
+                      setIsDropdownVisible(false);
+                    }
+                    
+                  }}
+                >
+                  {workspaceName.name}
+                </li>
+              ))}
+
+            </ul>
+          </div>
+        )}
+
+
       </div>
-      <div className="mx-auto h-[1px] mb-12 w-[80%]" style={{ backgroundColor: themeColors.background2}}></div>
+      <div className="mx-auto h-[1px] mb-12 w-[80%]" style={{ backgroundColor: themeColors.background2 }}></div>
       <ul className="flex flex-col mx-3 h-full space-y-3">
         {menuItems.map((item, index) => (
           <li key={index} className={location.pathname === item.path ? "px-[30px] py-[10px] rounded-md" : "px-[30px] py-[10px] rounded-md"} style={{ backgroundColor: location.pathname === item.path ? themeColors.primary : "" }}>
             <Link className='flex flex-row items-center' to={item.path}>
               <div className='mr-[13px]' dangerouslySetInnerHTML={{ __html: location.pathname === item.path ? getSidebarIconColor(item.iconWhite, item.iconBlack) : getSidebarIconColor(item.iconBlack, item.iconWhite) }}>
               </div>
-              <span className="font-normal" style={{ color: location.pathname === item.path ? getSidebarTextColor() : themeColors.text  }}>
+              <span className="font-normal" style={{ color: location.pathname === item.path ? getSidebarTextColor() : themeColors.text }}>
                 {item.name}
               </span>
               {item.soon &&
@@ -66,7 +107,7 @@ const Sidebar = () => {
         ))}
       </ul>
 
-      <div className="px-4 pt-4 pb-[31px] rounded-[10px] mt-10 mx-[14px] relative" style={{ backgroundColor: themeColors.background2}}>
+      <div className="px-4 pt-4 pb-[31px] rounded-[10px] mt-10 mx-[14px] relative" style={{ backgroundColor: themeColors.background2 }}>
         <div className="flex justify-center mb-10 relative">
           <img
             className="w-[37px] h-[37px] rounded-full absolute top-[-32px] left-[47%] transform -translate-x-full -ml-2"

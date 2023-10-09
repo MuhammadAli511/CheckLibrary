@@ -2,6 +2,7 @@ import AddProduct from './AddProduct';
 import ImportCsv from './ImportCsv';
 import Marketplace from './Marketplace';
 import NewProject from './NewProject';
+import NewWorkspace from './NewWorkspace';
 import NotFound from './NotFound';
 import Products from './Products';
 import Projects from './Projects';
@@ -19,5 +20,5 @@ import Dashboard from './home/Dashboard';
 import Onboarding from './home/Onboarding';
 import Settings from './settings/Settings';
 
-export { AddProduct, CheckYourMail, Dashboard, ForgotPassword, ImportCsv, Login, Marketplace, NewProject, NotFound, Onboarding, Products, Projects, ResetPassword, ResetPasswordSuccess, Settings, SignUp, Tasks, VerifyEmail, VerifyEmailClicked, WorkspaceOnboarding };
+export { AddProduct, CheckYourMail, Dashboard, ForgotPassword, ImportCsv, Login, Marketplace, NewProject, NewWorkspace, NotFound, Onboarding, Products, Projects, ResetPassword, ResetPasswordSuccess, Settings, SignUp, Tasks, VerifyEmail, VerifyEmailClicked, WorkspaceOnboarding };
 

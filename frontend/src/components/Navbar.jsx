@@ -2,12 +2,20 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ThemeContext } from "../ThemeProvider";
+import ArrowDown from '../assets/ArrowDown.svg';
+import ToDoIcon from '../assets/ToDo.svg';
 import { bell, document, documentWhite, gift, giftWhite, help, helpWhite, menuLines, plus, profile, search, settings, whiteMenuLines } from "../constants/svgs";
+const DROPDOWN_OPTIONS = [
+  { label: "Workspace", icon: ToDoIcon, path: "/newWorkspace" },
+  { label: "Project", icon: ToDoIcon, path: "/newProject" },
+  { label: "Task", icon: ToDoIcon, path: "/newTask" }
+];
 
 const Navbar = () => {
 
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const dropdownRef = useRef(null);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const navigate = useNavigate();
 
@@ -95,6 +103,9 @@ const Navbar = () => {
     default:
       displayText = "CheckLibrary";
   }
+
+
+
   return (
     <nav className="flex items-center justify-between p-2 mx-1 rounded-[10px] border border-zinc-300" style={{ backgroundColor: themeColors.background, borderColor: themeColors.cornerRadius, boxShadow: "0px 10px 21px 0px rgba(152, 152, 152, 0.12)" }}>
       <div className="flex flex-row items-center">
@@ -119,14 +130,34 @@ const Navbar = () => {
           </div>
 
         </div>
-        <div className="w-[108px] h-10 px-[9px] py-[10.50px] rounded-[5px] border justify-start items-center gap-1 inline-flex" style={{ backgroundColor: themeColors.background2, borderColor: themeColors.primary }}>
-          <div className="w-6 h-6 justify-center items-center flex">
-            <div className="w-6 h-6 relative" dangerouslySetInnerHTML={{ __html: plus }}>
-            </div>
-          </div>
-          <div className="text-lg font-normal" style={{ color: themeColors.primary }}>
+        <div className="relative inline-block text-left">
+          <button
+            className="flex items-center border-[#079263] text-[#079263] font-medium px-3 py-3 rounded-md border"
+            onClick={() => setShowDropdown(prev => !prev)}
+          >
+            <div className="mr-2 " dangerouslySetInnerHTML={{ __html: plus }}></div>
             Create
-          </div>
+          </button>
+
+          {showDropdown && (
+            <div className="origin-top-right absolute right-0 mt-2 w-36 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 bg-white">
+              <div className="py-1">
+                {DROPDOWN_OPTIONS.map(({ label, icon, path }) => (
+                  <button
+                    key={label}
+                    onClick={() => {
+                      navigate(path);
+                      setShowDropdown(false);
+                    }}
+                    className="block px-4 py-2 text-sm text-black w-full text-left hover:bg-gray-200 flex items-center space-x-2"
+                  >
+                    <img src={icon} alt={label} className="h-5 w-5" />
+                    <span>{label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
         <div className="w-10 h-10 rounded-[5px]  items-center justify-center flex" dangerouslySetInnerHTML={{ __html: getGift() }} style={{ backgroundColor: themeColors.background2, borderColor: themeColors.cornerRadius }}>
 

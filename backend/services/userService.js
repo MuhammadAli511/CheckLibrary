@@ -7,3 +7,7 @@ module.exports.setSelectedWorkspace = async (userId, workspaceId) => {
 module.exports.getUserById = async (userId) => {
     return await User.findById(userId);
 }
+
+module.exports.updateAccountStatus = async (userId, status) => {
+    await User.findOneAndUpdate({ _id: userId }, { accountStatus: status });
+}

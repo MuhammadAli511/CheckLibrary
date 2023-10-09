@@ -39,6 +39,9 @@ router.post('/userRoute/verifyUserEmail', userController.verifyUserEmail)
 // POST api/workspaceRoute/workspaceOnboarding
 router.post('/workspaceRoute/workspaceOnboarding', requireAuth, workspaceController.workspaceOnboarding)
 
+// POST api//workspaceRoute/workspaceCreation
+router.post('/workspaceRoute/workspaceCreation', requireAuth, workspaceController.workspaceCreation)
+
 // POST api/workspaceRoute/updateTheme
 router.post('/workspaceRoute/updateTheme', requireAuth, workspaceController.updateTheme)
 
@@ -47,5 +50,8 @@ router.post('/workspaceRoute/updateSingleColor', requireAuth, workspaceControlle
 
 // POST api/workspaceRoute/updateDateTimeValues
 router.post('/workspaceRoute/updateDateTimeValues', requireAuth, workspaceController.updateDateTimeValues)
+
+// POST api/workspaceRoute/setSelectedWorkspaceName
+router.post('/workspaceRoute/setSelectedWorkspaceName', requireAuth, workspaceController.setSelectedWorkspaceName)
 
 module.exports = router
